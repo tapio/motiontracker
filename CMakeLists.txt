@@ -46,6 +46,7 @@ if(UNIX)
 	list(APPEND LIBS "rt")
 endif(UNIX)
 
+add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(examples)
 

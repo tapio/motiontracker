@@ -9,3 +9,5 @@ add_library(${LIBNAME} STATIC ${SOURCES})
 
 link_directories(${CMAKE_BINARY_DIR})
 
+install(TARGETS ${LIBNAME} DESTINATION lib)
+

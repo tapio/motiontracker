@@ -9,3 +9,5 @@ file(GLOB SOURCES "*.cc")
 add_executable(${EXENAME} ${SOURCES})
 target_link_libraries(${EXENAME} ${LIBS})
 
+install(TARGETS ${EXENAME} DESTINATION bin)
+
