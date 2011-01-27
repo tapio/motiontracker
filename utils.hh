@@ -26,7 +26,7 @@ struct Timer {
 		#ifdef _WIN32
 			QueryPerformanceCounter(&m_start_time);
 		#elif _POSIX_TIMERS > 0
-			clock_gettime(CLOCK_REALTIME, &m_start_time);
+			clock_gettime(CLOCK_MONOTONIC, &m_start_time);
 		#else
 			m_start_time = clock();
 		#endif
