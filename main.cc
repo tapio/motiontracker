@@ -16,6 +16,7 @@ int main(int argc, char** argv)
 		std::cout << "yes" << std::endl;
 	} catch (std::exception& e) {
 		std::cout << "no" << std::endl;
+		return 1;
 	}
 
 	VideoCapture cap;
