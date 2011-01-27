@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 			GaussianBlur(edges, edges, Size(15,15), 1.5, 1.5);
 			Canny(edges, edges, 20, 60, 3);
 			putText(edges, boost::lexical_cast<std::string>(counter.getFPS()),
-				Point(0,30), FONT_HERSHEY_PLAIN , 2, CV_RGB(255,0,255));
+				Point(0,30), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 			imshow("video", edges);
 		} else
 			webcam->render();

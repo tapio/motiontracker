@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdexcept>
+#include <highgui.h>
+#include <boost/lexical_cast.hpp>
 
 #include "webcam.hh"
-
-#include <highgui.h>
+#include "utils.hh"
 
 Webcam::Webcam(int cam_id):
   m_thread(), m_capture(), m_writer(), m_latestFrame(), m_displayFrame(), m_frameAvailable(false), m_running(false), m_quit(false)
@@ -42,6 +43,7 @@ Webcam::~Webcam() {
 
 void Webcam::operator()() {
 	m_running = true;
+	FPSCounter counter(5);
 	while (!m_quit) {
 		if (m_running) {
 			try {
@@ -51,9 +53,12 @@ void Webcam::operator()() {
 				if (m_writer) *m_writer << newFrame;
 				boost::mutex::scoped_lock l(m_mutex);
 				m_latestFrame = newFrame;
+				putText(m_latestFrame, boost::lexical_cast<std::string>(counter.getFPS()),
+					cv::Point(0,60), cv::FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 				// Notify renderer
 				m_frameAvailable = true;
 			} catch (std::exception&) { std::cerr << "Error capturing webcam frame!" << std::endl; }
+			counter();
 		}
 	}
 }
