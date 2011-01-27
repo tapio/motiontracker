@@ -1,12 +1,11 @@
 #pragma once
 
 /**
- * Yleisiä "auttajia."
+ * Helpers
  */
 
-// Maksimaalisen ajastin tarkkuuden saavuttamiseksi
-// pitää tehdä vähän alustariippuvaista koodia.
-// POSIX-alustalla pitää linkittää librt:n kanssa.
+// Some platform dependant code to get
+// needed resolution for timer.
 #ifndef _WIN32
 	#include <unistd.h>
 #endif
@@ -20,7 +19,7 @@
 	typedef clock_t timetype;
 #endif
 
-/// Ajan mittaaja
+/// Timer
 struct Timer {
 	Timer(std::string msg): m_msg(msg), m_duration(0.0) {
 		#ifdef _WIN32
