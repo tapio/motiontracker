@@ -22,7 +22,7 @@
 
 /// Timer
 struct Timer {
-	Timer(std::string msg): m_msg(msg), m_duration(0.0) {
+	Timer(): m_duration(0.0) {
 		#ifdef _WIN32
 			QueryPerformanceCounter(&m_start_time);
 		#elif _POSIX_TIMERS > 0
@@ -31,7 +31,8 @@ struct Timer {
 			m_start_time = clock();
 		#endif
 	}
-	double stop() {
+
+	double interval() {
 		#ifdef _WIN32
 			LARGE_INTEGER stop_time;
 			QueryPerformanceCounter(&stop_time);
@@ -47,21 +48,18 @@ struct Timer {
 		#else
 			m_duration = double(clock() - m_start_time) / CLOCKS_PER_SEC;
 			m_start_time = clock();
-
 		#endif
 		return m_duration;
 	}
 
-	~Timer() { if (!m_duration) stop(); std::cout << m_msg << " " <<  m_duration << "s" << std::endl; }
-  private:
-	std::string m_msg;
+private:
 	timetype m_start_time;
 	double m_duration;
 };
 
 /// FPS Counter
 struct FPSCounter {
-	FPSCounter(int memLength): memoryLength(memLength), timer(Timer("")) {
+	FPSCounter(int memLength): memoryLength(memLength), timer() {
 		for (int i = 0; i < memoryLength; ++i) {
 			memory.push_back(0.0);
 		}
@@ -69,7 +67,7 @@ struct FPSCounter {
 
 	void operator()() {
 		memory.pop_back();
-		memory.push_front(timer.stop());
+		memory.push_front(timer.interval());
 	}
 
 	double getFPS() {
@@ -79,9 +77,8 @@ struct FPSCounter {
 		return (int)(memoryLength / sum); // 1 / average time to render one frame
 	}
 
-	private:
-		int memoryLength;
-		Timer timer;
-		std::deque<double> memory;
-
+private:
+	int memoryLength;
+	Timer timer;
+	std::deque<double> memory;
 };
