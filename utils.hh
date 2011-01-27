@@ -76,7 +76,7 @@ struct FPSCounter {
 		double sum = 0;
 		for (int i = 0; i < memoryLength; ++i)
 			sum += memory.at(i);
-		return memoryLength / sum; // 1 / average time to render one frame
+		return (int)(memoryLength / sum); // 1 / average time to render one frame
 	}
 
 	private:
