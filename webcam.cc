@@ -3,11 +3,10 @@
 
 #include "webcam.hh"
 
-#include <cv.h>
 #include <highgui.h>
 
 Webcam::Webcam(int cam_id):
-  m_thread(), m_capture(), m_writer(), m_frameAvailable(false), m_running(false), m_quit(false)
+  m_thread(), m_capture(), m_writer(), m_latestFrame(), m_displayFrame(), m_frameAvailable(false), m_running(false), m_quit(false)
   {
 	// Initialize the capture device
 	m_capture.reset(new cv::VideoCapture(cam_id));
@@ -47,19 +46,22 @@ void Webcam::operator()() {
 		if (m_running) {
 			try {
 				// Get a new frame
-				cv::Mat frame;
-				*m_capture >> frame;
-				if (m_writer) *m_writer << frame;
+				cv::Mat newFrame;
+				*m_capture >> newFrame;
+				if (m_writer) *m_writer << newFrame;
 				boost::mutex::scoped_lock l(m_mutex);
-				// Copy the frame to storage
-				m_frame.width = frame.cols;
-				m_frame.height = frame.rows;
-				m_frame.data.assign(frame.data, frame.data + (m_frame.width * m_frame.height * 3));
+				m_latestFrame = newFrame;
 				// Notify renderer
 				m_frameAvailable = true;
 			} catch (std::exception&) { std::cerr << "Error capturing webcam frame!" << std::endl; }
 		}
 	}
+}
+
+Webcam& Webcam::operator>>(cv::Mat& rhs) {
+	boost::mutex::scoped_lock l(m_mutex);
+	rhs = m_latestFrame;
+	return *this;
 }
 
 void Webcam::pause(bool do_pause) {
@@ -71,12 +73,15 @@ void Webcam::pause(bool do_pause) {
 void Webcam::render() {
 	if (!m_capture || !m_running) return;
 	// Do we have a new frame available?
-	if (m_frameAvailable && !m_frame.data.empty()) {
+	if (m_frameAvailable) {
 		boost::mutex::scoped_lock l(m_mutex);
 		// Load the image
-		// TODO: load the frame somewhere for display
-		//XXX.load(m_frame.width, m_frame.height, pix::BGR, &m_frame.data[0]);
+		m_displayFrame = m_latestFrame;
 		m_frameAvailable = false;
+		//XXX.load(m_frame.width, m_frame.height, pix::BGR, &m_frame.data[0]);
 	}
-	// TODO: Draw
+	try {
+		if (!m_displayFrame.empty())
+			imshow("video", m_displayFrame);
+	} catch (...) {}
 }

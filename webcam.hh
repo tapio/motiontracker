@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cv.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
@@ -27,6 +28,7 @@ class Webcam {
 	/// Thread runs here, don't call directly
 	void operator()();
 
+	Webcam& operator>>(cv::Mat& rhs);
 	
 	/// Capture failed to initialize?
 	bool isNull() { return m_capture == 0; }
@@ -40,6 +42,8 @@ class Webcam {
 	mutable boost::mutex m_mutex;
 	boost::scoped_ptr<cv::VideoCapture> m_capture;
 	boost::scoped_ptr<cv::VideoWriter> m_writer;
+	cv::Mat m_latestFrame;
+	cv::Mat m_displayFrame;
 	CamFrame m_frame;
 	bool m_frameAvailable;
 	volatile bool m_running;
