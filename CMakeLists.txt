@@ -4,6 +4,7 @@ cmake_policy(VERSION 2.6)
 set(PROJECT_VERSION "alpha")
 
 option(BUILD_EXAMPLES "Build the example program(s)." ON)
+option(BUILD_SHARED_LIBS "Build shared/dynamic library instead of a static one." OFF) # Default to static
 
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
