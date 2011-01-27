@@ -59,7 +59,7 @@ struct Timer {
 /// FPS Counter
 struct FPSCounter {
 	FPSCounter(int memLength): memoryLength(memLength), timer(Timer("")) {
-		for (int i = 0; i < memoryLength; i++) {
+		for (int i = 0; i < memoryLength; ++i) {
 			memory.push_back(0.0);
 		}
 	}
@@ -71,7 +71,7 @@ struct FPSCounter {
 
 	double getFPS() {
 		double sum = 0;
-		for (int i = 0; i < memoryLength; i++)
+		for (int i = 0; i < memoryLength; ++i)
 			sum += memory.at(i);
 		return memoryLength / sum; // 1 / average time to render one frame
 	}
