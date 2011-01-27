@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         for (;;) {
             cap >> frame;
 			cvtColor(frame, edges, CV_BGR2GRAY);
-			GaussianBlur(frame,frame,Size(15,15),1.5,1.5);
+			GaussianBlur(edges,edges,Size(15,15),1.5,1.5);
 			Canny(edges, edges,20,60,3);
 			imshow("video", edges);
             if(waitKey(30) >= 0) break;
