@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 2.6)
 cmake_policy(VERSION 2.6)
 set(PROJECT_VERSION "alpha")
 
+option(BUILD_EXAMPLES "Build the example program(s)." ON)
+
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
 	message(FATAL_ERROR "In-source builds are not permitted. Make a separate folder for building:\nmkdir build; cd build; cmake ..\nBefore that, remove the files already created:\nrm -rf CMakeCache.txt CMakeFiles")
@@ -51,5 +53,7 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 add_subdirectory(include)
 add_subdirectory(src)
-add_subdirectory(examples)
+if(BUILD_EXAMPLES)
+	add_subdirectory(examples)
+endif(BUILD_EXAMPLES)
 
