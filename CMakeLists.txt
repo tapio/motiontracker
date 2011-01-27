@@ -43,6 +43,9 @@ foreach(lib OpenCV)
 	add_definitions(${${lib}_DEFINITIONS})
 endforeach(lib)
 
+if(UNIX)
+	list(APPEND LIBS "rt")
+endif(UNIX)
 
 FILE(GLOB SOURCE_FILES "*.cc")
 FILE(GLOB HEADER_FILES "*.hh")
