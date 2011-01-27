@@ -46,6 +46,9 @@ if(UNIX)
 	list(APPEND LIBS "rt")
 endif(UNIX)
 
+# We want the binaries to be easily accessible
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+
 add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(examples)
