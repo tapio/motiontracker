@@ -15,6 +15,7 @@ int main(int argc, char** argv)
 		std::cout << "yes" << std::endl;
 	} catch (std::exception&) {
 		std::cout << "no" << std::endl;
+		return 1;
 	}
 
 	Mat frame;
