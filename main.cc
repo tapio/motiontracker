@@ -5,6 +5,7 @@
 //#include "ml.h"
 //#include "cxcore.hpp"
 #include "highgui.h"
+#include "utils.hh"
 
 using namespace cv;
 int main(int argc, char** argv)

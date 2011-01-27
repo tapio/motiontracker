@@ -1,4 +1,5 @@
 #pragma once
+#include <deque>
 
 /**
  * Helpers
@@ -37,14 +38,17 @@ struct Timer {
 			LARGE_INTEGER freq;
 			QueryPerformanceFrequency(&freq);
 			m_duration = (double)(stop_time.QuadPart - m_start_time.QuadPart) / (double)freq.QuadPart;
+			m_start_time = stop_time;
 		#elif _POSIX_TIMERS > 0
 			timetype t;
 			clock_gettime(CLOCK_REALTIME, &t);
 			m_duration = (t.tv_sec - m_start_time.tv_sec) + (t.tv_nsec - m_start_time.tv_nsec) / 1000000000.0;
+			m_start_time = t;
 		#else
 			m_duration = double(clock() - m_start_time) / CLOCKS_PER_SEC;
+			m_start_time = clock();
+
 		#endif
-			m_start_time += m_duration;
 		return m_duration;
 	}
 
@@ -63,7 +67,7 @@ struct FPSCounter {
 		}
 	}
 
-	FPSCounter::operator()() {
+	void operator()() {
 		memory.pop_back();
 		memory.push_front(timer.stop());
 	}
@@ -76,7 +80,8 @@ struct FPSCounter {
 	}
 
 	private:
+		int memoryLength;
 		Timer timer;
 		std::deque<double> memory;
-		int memoryLength;
+
 };
