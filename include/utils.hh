@@ -2,7 +2,7 @@
 #include <deque>
 
 /**
- * Helpers
+ * Helpers.
  */
 
 // Some platform dependant code to get
@@ -59,26 +59,21 @@ private:
 
 /// FPS Counter
 struct FPSCounter {
-	FPSCounter(int memLength): memoryLength(memLength), timer() {
-		for (int i = 0; i < memoryLength; ++i) {
-			memory.push_back(0.0);
-		}
-	}
+	FPSCounter(int memLength = 5): m_memory(memLength), m_timer() { }
 
 	void operator()() {
-		memory.pop_back();
-		memory.push_front(timer.interval());
+		m_memory.pop_back();
+		m_memory.push_front(m_timer.interval());
 	}
 
-	double getFPS() {
+	double getFPS() const {
 		double sum = 0;
-		for (int i = 0; i < memoryLength; ++i)
-			sum += memory.at(i);
-		return (int)(memoryLength / sum); // 1 / average time to render one frame
+		for (size_t i = 0; i < m_memory.size(); ++i)
+			sum += m_memory.at(i);
+		return (int)(m_memory.size() / sum); // 1 / average time to render one frame
 	}
 
 private:
-	int memoryLength;
-	Timer timer;
-	std::deque<double> memory;
+	std::deque<double> m_memory;
+	Timer m_timer;
 };
