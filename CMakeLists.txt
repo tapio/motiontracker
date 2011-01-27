@@ -2,7 +2,6 @@ project(MotionTracker CXX C)
 cmake_minimum_required(VERSION 2.6)
 cmake_policy(VERSION 2.6)
 set(PROJECT_VERSION "alpha")
-set(EXENAME "tracker")
 
 # Avoid source tree pollution
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
@@ -27,7 +26,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	endif(NOT WIN32)
 endif()
 
-
 # Libraries
 
 # Boost
@@ -38,20 +36,16 @@ list(APPEND LIBS ${Boost_LIBRARIES})
 # Find all the libs that don't require extra parameters
 foreach(lib OpenCV)
 	find_package(${lib} REQUIRED)
+	add_definitions(${${lib}_DEFINITIONS})
 	include_directories(${${lib}_INCLUDE_DIRS})
 	list(APPEND LIBS ${${lib}_LIBRARIES})
-	add_definitions(${${lib}_DEFINITIONS})
 endforeach(lib)
 
+# On POSIX systems librt is needed for high resolution timer
 if(UNIX)
 	list(APPEND LIBS "rt")
 endif(UNIX)
 
-FILE(GLOB SOURCE_FILES "*.cc")
-FILE(GLOB HEADER_FILES "*.hh")
-
-set(SOURCES ${SOURCE_FILES} ${HEADER_FILES})
-
-add_executable(${EXENAME} ${SOURCES})
-target_link_libraries(${EXENAME} ${LIBS})
+add_subdirectory(src)
+add_subdirectory(examples)
 
