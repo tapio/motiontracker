@@ -43,6 +43,7 @@ foreach(lib OpenCV)
 	include_directories(${${lib}_INCLUDE_DIRS})
 	list(APPEND LIBS ${${lib}_LIBRARIES})
 endforeach(lib)
+list(APPEND LIBS ${OpenCV_LIBS})
 
 # On POSIX systems librt is needed for high resolution timer
 if(UNIX)
