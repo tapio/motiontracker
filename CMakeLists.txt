@@ -54,8 +54,16 @@ endif(UNIX)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 add_subdirectory(include)
-add_subdirectory(src)
-if(BUILD_EXAMPLES)
-	add_subdirectory(examples)
-endif(BUILD_EXAMPLES)
+#add_subdirectory(src)
+#if(BUILD_EXAMPLES)
+#	add_subdirectory(examples)
+#endif(BUILD_EXAMPLES)
+
+#FIXME: This is horrible hack to make linking work
+
+set(EXENAME tracker)
+include_directories("${CMAKE_SOURCE_DIR}/include")
+file(GLOB SOURCES "examples/*.cc" "src/*.cc")
+add_executable(tracker ${SOURCES})
+target_link_libraries(tracker ${LIBS})
 
