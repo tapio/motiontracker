@@ -53,6 +53,8 @@ endif(UNIX)
 # We want the binaries to be easily accessible
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
+set(INCDIR "${CMAKE_SOURCE_DIR}/include")
+
 add_subdirectory(include)
 add_subdirectory(src)
 if(BUILD_EXAMPLES)
