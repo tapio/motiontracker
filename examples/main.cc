@@ -8,7 +8,24 @@
 
 using namespace cv;
 
-void cb_calibrateButton(int, void*) {
+void cb_calibrateButton(int n, void* webcamPtr) {
+	Webcam* cam = (Webcam*)webcamPtr;
+	int n_boards = 8; // Number of pictures taken
+	const int board_dt = 20;
+	int board_w = 5; // Board with in squares
+	int board_h = 8; // Board height in squares
+	int board_n = board_w * board_h;
+	Size board_size = Size(board_w, board_h);
+
+	namedWindow("Calibration",1);
+	Mat frame;
+	while (waitKey(30) < 0) {
+		*cam >> frame;
+		if (!frame.empty()) {
+			imshow("Calibration", frame);
+		} else
+			cam->render();
+	}
 	return;
 }
 
@@ -28,7 +45,7 @@ int main(int argc, char** argv)
 	Mat frame;
 	Mat edges;
 	namedWindow("video",1);
-	createButton("Calibrate",cb_calibrateButton);
+	createButton("Calibrate",cb_calibrateButton,&webcam);
 	FPSCounter counter(5);
 	while (waitKey(30) < 0) {
 		*webcam >> frame;
