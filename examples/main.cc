@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 	Mat frame;
 	Mat edges;
 	namedWindow("video",1);
-	createButton("Calibrate",cb_calibrateButton,&webcam);
+	createButton("Calibrate",cb_calibrateButton,webcam.get(),CV_CHECKBOX);
 	FPSCounter counter(5);
 	while (waitKey(5) < 0) {
 		*webcam >> frame;
