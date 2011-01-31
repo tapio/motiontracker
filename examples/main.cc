@@ -47,7 +47,7 @@ int main(int argc, char** argv)
 	namedWindow("video",1);
 	createButton("Calibrate",cb_calibrateButton,&webcam);
 	FPSCounter counter(5);
-	while (waitKey(30) < 0) {
+	while (waitKey(5) < 0) {
 		*webcam >> frame;
 		if (!frame.empty()) {
 			cvtColor(frame, edges, CV_BGR2GRAY);
