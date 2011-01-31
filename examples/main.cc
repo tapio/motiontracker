@@ -7,6 +7,11 @@
 #include <boost/lexical_cast.hpp>
 
 using namespace cv;
+
+void cb_calibrateButton(int, void*) {
+	return;
+}
+
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings
@@ -23,6 +28,7 @@ int main(int argc, char** argv)
 	Mat frame;
 	Mat edges;
 	namedWindow("video",1);
+	createButton("Calibrate",cb_calibrateButton);
 	FPSCounter counter(5);
 	while (waitKey(30) < 0) {
 		*webcam >> frame;
@@ -39,5 +45,7 @@ int main(int argc, char** argv)
 			webcam->render();
 		counter();
 	}
+	cvDestroyAllWindows();
 	return 0;
 }
+
