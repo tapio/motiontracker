@@ -10,22 +10,46 @@ using namespace cv;
 
 void cb_calibrateButton(int n, void* webcamPtr) {
 	Webcam* cam = (Webcam*)webcamPtr;
-	int n_boards = 8; // Number of pictures taken
+	int n_boards = 3; // Number of pictures taken
 	const int board_dt = 20;
-	int board_w = 5; // Board with in squares
-	int board_h = 8; // Board height in squares
+	int board_w = 6; // Board with in squares
+	int board_h = 9; // Board height in squares
 	int board_n = board_w * board_h;
 	Size board_size = Size(board_w, board_h);
 
+	Mat image_points(n_boards*board_n,2,CV_32FC1);
+	Mat object_points(n_boards*board_n,2, CV_32FC1);
+	Mat point_counts(n_boards, 1, CV_32SC1);
+	Mat intrinsic_matrix(3,3,CV_32FC1);
+	Mat distortion_coeffs(5,1,CV_32FC1);
+
+	vector<Point2f> corners;
+	int corner_count;
+	int successes = 0;
+
 	namedWindow("Calibration",1);
 	Mat frame;
-	while (waitKey(30) < 0) {
-		*cam >> frame;
-		if (!frame.empty()) {
-			imshow("Calibration", frame);
-		} else
-			cam->render();
+	Mat cornerImg;
+	int c;
+	while (successes < n_boards) {
+		while (waitKey(30) < 0) {
+			*cam >> frame;
+			if (!frame.empty()) {
+				imshow("Calibration", frame);
+			} else
+				cam->render();
+		}
+		bool patternFound = findChessboardCorners(frame,board_size,corners);
+
+		drawChessboardCorners(frame, board_size, Mat(corners), patternFound);
+		imshow("Calibration", frame);
+
+		if(patternFound)
+			successes++;
+		waitKey(0);
+
 	}
+	destroyWindow("Calibration");
 	return;
 }
 
