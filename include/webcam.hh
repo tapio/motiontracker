@@ -30,6 +30,8 @@ class Webcam {
 
 	Webcam& operator>>(cv::Mat& rhs);
 	
+	/// Get frame rate
+	int getFPS() const;
 	/// Capture failed to initialize?
 	bool isNull() { return m_capture == 0; }
 	/// When paused, does not get or render frames
@@ -40,12 +42,14 @@ class Webcam {
   private:
 	boost::scoped_ptr<boost::thread> m_thread;
 	mutable boost::mutex m_mutex;
+	mutable boost::mutex m_fpsmutex;
 	boost::scoped_ptr<cv::VideoCapture> m_capture;
 	boost::scoped_ptr<cv::VideoWriter> m_writer;
 	cv::Mat m_latestFrame;
 	cv::Mat m_displayFrame;
 	CamFrame m_frame;
 	bool m_frameAvailable;
+	int m_fps;
 	volatile bool m_running;
 	volatile bool m_quit;
 };

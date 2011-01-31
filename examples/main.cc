@@ -32,6 +32,8 @@ int main(int argc, char** argv)
 			Canny(edges, edges, 20, 60, 3);
 			putText(edges, boost::lexical_cast<std::string>(counter.getFPS()),
 				Point(0,30), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
+			putText(edges, boost::lexical_cast<std::string>(webcam->getFPS()),
+				cv::Point(0,60), cv::FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 			imshow("video", edges);
 		} else
 			webcam->render();
