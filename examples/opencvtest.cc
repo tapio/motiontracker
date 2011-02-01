@@ -43,13 +43,15 @@ int main(int argc, char** argv)
 
 	namedWindow("video", 1);
 
-	// Launch a receiver for doing the work whenever a frame is available
-	MyWebcamReceiver video(*webcam, "video");
+	{
+		// Launch a receiver for doing the work whenever a frame is available
+		MyWebcamReceiver video(*webcam, "video");
 
-	// Rest here
-	while (waitKey(30) < 0);
+		// Rest here
+		while (waitKey(30) < 0);
+	}
 
-	cvDestroyAllWindows();
+	cvDestroyWindow("video");
 	return 0;
 }
 
