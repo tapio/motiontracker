@@ -156,7 +156,7 @@ struct FrameReceiver: public boost::noncopyable
 	FrameReceiver(Webcam &webcam);
 	
 	/** Destructor kills the listener thread. */
-	~FrameReceiver();
+	virtual ~FrameReceiver();
 
 	/** Thread runs here, don't call directly. */
 	void operator()();
@@ -187,7 +187,7 @@ struct MotionReceiver: public boost::noncopyable
 	MotionReceiver(MotionTracker &motiontracker);
 	
 	/** Destructor kills the listener thread. */
-	~MotionReceiver();
+	virtual ~MotionReceiver();
 
 	/** Thread runs here, don't call directly. */
 	void operator()();
