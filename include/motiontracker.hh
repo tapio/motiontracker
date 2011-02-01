@@ -10,7 +10,6 @@
 namespace cv {
 	class VideoCapture;
 }
-class Webcam;
 
 
 struct CameraParameters
@@ -110,22 +109,36 @@ public:
 	/** Destructor. */
 	~MotionTracker();
 
+	/** Thread runs here, don't call directly. */
+	void operator()();
+
 	/**
 	 * Returns the current orientation of the tracked object.
 	 * @return the orientation in a vector
 	 */
-	cv::Vec3f getOrientation();
+	cv::Vec3f getOrientation() const;
 
 	/**
 	 * Returns the current center position of the tracked object.
 	 * @return the position in a vector
 	 */
-	cv::Vec3f getPosition();
+	cv::Vec3f getPosition() const;
+
+	/**
+	 * Get frame rate.
+	 * @return frames per second
+	 */
+	int getFPS() const;
 
 private:
 	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
 	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
+	mutable boost::mutex m_mutex; /// Mutex
+	mutable boost::mutex m_fpsmutex; /// Mutex for FPS calculation & retrieving
 	bool m_quit; /// Flag telling to quit
+	cv::Vec3f m_pos;
+	cv::Vec3f m_rot;
+	int m_fps;
 };
 
 
