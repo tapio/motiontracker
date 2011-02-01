@@ -6,12 +6,12 @@
 #include <boost/thread/thread.hpp>
 
 
-class Webcam;
+// Forward declarations
 namespace cv {
-	// Forward declarations
 	class VideoCapture;
-	class VideoWriter;
 }
+class Webcam;
+
 
 typedef void* DummyType; // FIXME
 
@@ -77,16 +77,12 @@ public:
 
 private:
 	boost::scoped_ptr<boost::thread> m_thread;
+	boost::scoped_ptr<cv::VideoCapture> m_capture;
 	mutable boost::mutex m_mutex;
 	mutable boost::mutex m_fpsmutex;
-	boost::scoped_ptr<cv::VideoCapture> m_capture;
-	boost::scoped_ptr<cv::VideoWriter> m_writer;
-	cv::Mat m_latestFrame;
-	cv::Mat m_displayFrame;
-	bool m_frameAvailable;
-	int m_fps;
-	volatile bool m_running;
 	volatile bool m_quit;
+	cv::Mat m_latestFrame;
+	int m_fps;
 };
 
 
