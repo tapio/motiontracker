@@ -9,57 +9,55 @@ using namespace cv;
 
 void cb_calibrateButton(int n, void* webcamPtr) {
 	Webcam* cam = (Webcam*)webcamPtr;
-	int n_boards = 4; // Number of pictures taken
-	const int board_dt = 20;
-	int board_w = 6; // Board width in squares
-	int board_h = 9; // Board height in squares
-	int board_n = board_h * board_w;
-	Size board_size = Size(board_h, board_w);
 
-	Mat distortion_coeffs(5, 1, CV_32FC1);
+	int n_boards = 8;	// Number of pictures taken
+	int board_w = 6;	// Board width in squares
+	int board_h = 9;	// Board height in squares
+
+	int numCorners = board_h * board_w;
+	Size board_size = Size(board_w, board_h);
 
 	vector<Point2f> corners;
-	vector<vector<Point2f> > image_points2;
-
-	// Here we assume that the calibration pattern is fully visible in every image,
-	// which means that object_points has n_boards same vectors
-
 	vector<Point3f> object_corners;
-	vector<vector<Point3f> > object_points2;
 
-	for (int i = 0; i < board_n; ++i) {
-		object_corners.push_back(Point3f(i / board_w, i % board_w, 0));
-	}
+	vector<vector<Point2f> > image_points;
+	vector<vector<Point3f> > object_points;
 
 	int successes = 0;
 
+	for (int i = 0; i < numCorners; ++i) {
+		object_corners.push_back(Point3f(i / board_h, i % board_h, 0.0f));
+	}
+
 	namedWindow("Calibration", 1);
-	Mat frame;
 	Mat img;
+	Mat gray_img;
 	int c;
 	while (successes < n_boards) {
 		while (waitKey(30) < 0) {
-			*cam >> frame;
+			*cam >> img;
 
-			if (!frame.empty()) {
-				imshow("Calibration", frame);
+			if (!img.empty()) {
+				imshow("Calibration", img);
 			}
 			displayOverlay("Calibration", "Press any key to take a picture", 1);
 		}
-		bool patternFound = findChessboardCorners(frame, board_size, corners);
+		bool patternFound = findChessboardCorners(img, board_size, corners, CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS);
 
 		if (patternFound) {
-			cvtColor(frame, img, CV_BGR2GRAY);
-			drawChessboardCorners(frame, board_size, Mat(corners), patternFound);
-			cornerSubPix(img, corners, Size(11,11), Size(-1,-1), TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-			imshow("Calibration", frame);
+			cvtColor(img, gray_img, CV_BGR2GRAY); // Convert to gray image for cornerSubPix
+
+			cornerSubPix(gray_img, corners, Size(11,11), Size(-1,-1), TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+			drawChessboardCorners(img, board_size, corners, patternFound);
+
+			imshow("Calibration", img);
 			displayOverlay("Calibration", "Press S to save calibration image or any other key to discard it", 1);
 			c = waitKey(0);
 
 			if (c == 's' || c == 'S') {
-				image_points2.push_back(corners);
-				object_points2.push_back(object_corners);
-				imshow("Calibration", img);
+				image_points.push_back(corners);
+				object_points.push_back(object_corners);
+				imshow("Calibration", gray_img);
 				displayOverlay("Calibration", "Calibration image saved. Press any key to continue", 1);
 				successes++;
 				waitKey(0);
@@ -69,45 +67,36 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 				waitKey(0);
 			}
 		} else {
-			imshow("Calibration", frame);
+			imshow("Calibration", img);
 			displayOverlay("Calibration", "Could not detect calibration pattern in image. Press any key to continue", 1);
 			waitKey(0);
 		}
 	} // End of collection loop
 
 	Mat intrinsic_matrix(3,3,CV_32FC1);
-	intrinsic_matrix.at<float>(0,0) = 1; // fx
-	intrinsic_matrix.at<float>(0,1) = 0;
-	intrinsic_matrix.at<float>(0,2) = 0; // cx
-
-	intrinsic_matrix.at<float>(1,0) = 0;
-	intrinsic_matrix.at<float>(1,1) = 1;	// fy
-	intrinsic_matrix.at<float>(1,2) = 0;  // cy
-
-	intrinsic_matrix.at<float>(2,0) = 0;
-	intrinsic_matrix.at<float>(2,0) = 0;
-	intrinsic_matrix.at<float>(2,2) = 1;	// needs to be 1
-
-	std::cout << "Intrinsic matrix:" << std::endl;
-	std::cout << intrinsic_matrix.at<float>(0,0) << " " << intrinsic_matrix.at<float>(0,1) << " " << intrinsic_matrix.at<float>(0,2) << std::endl;
-	std::cout << intrinsic_matrix.at<float>(1,0) << " " <<  intrinsic_matrix.at<float>(1,1)<< " " << intrinsic_matrix.at<float>(1,2) << std::endl;
-	std::cout << intrinsic_matrix.at<float>(2,0) << " " << intrinsic_matrix.at<float>(2,1) << " " << intrinsic_matrix.at<float>(2,2) << std::endl;
-
+	Mat distortion_coeffs;
 	vector<Mat> rvecs;
 	vector<Mat> tvecs;
+
+	intrinsic_matrix.ptr<float>(0)[0] = 1;
+	intrinsic_matrix.ptr<float>(1)[1] = 1;
+
 	// Calibrate camera
-	double error = calibrateCamera(object_points2, image_points2, Size(640,480), intrinsic_matrix, distortion_coeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
+	// NB: Converts matrices to 64bit versions
+	calibrateCamera(object_points, image_points, img.size(), intrinsic_matrix, distortion_coeffs, rvecs, tvecs);
 
 	std::cout << "Intrinsic matrix after calibration:" << std::endl;
-	std::cout << intrinsic_matrix.at<float>(0,0) << " " << intrinsic_matrix.at<float>(0,1) << " " << intrinsic_matrix.at<float>(0,2) << std::endl;
-	std::cout << intrinsic_matrix.at<float>(1,0) << " " <<  intrinsic_matrix.at<float>(1,1)<< " " << intrinsic_matrix.at<float>(1,2) << std::endl;
-	std::cout << intrinsic_matrix.at<float>(2,0) << " " << intrinsic_matrix.at<float>(2,1) << " " << intrinsic_matrix.at<float>(2,2) << std::endl;
+	std::cout << intrinsic_matrix.at<double>(0,0) << " " << intrinsic_matrix.at<double>(0,1) << " " << intrinsic_matrix.at<double>(0,2) << std::endl;
+	std::cout << intrinsic_matrix.at<double>(1,0) << " " <<  intrinsic_matrix.at<double>(1,1)<< " " << intrinsic_matrix.at<double>(1,2) << std::endl;
+	std::cout << intrinsic_matrix.at<double>(2,0) << " " << intrinsic_matrix.at<double>(2,1) << " " << intrinsic_matrix.at<double>(2,2) << std::endl;
+
+	std::cout << "Distortion coefficients:" << std::endl;
+	std::cout << distortion_coeffs.at<double>(0,0) << " " << distortion_coeffs.at<double>(0,1) << " " << distortion_coeffs.at<double>(0,2) << " " << distortion_coeffs.at<double>(0,3) << std::endl;
 
 	destroyWindow("Calibration");
 	return;
 
 }
-
 
 struct MyWebcamReceiver: public FrameReceiver {
 	std::string window;
