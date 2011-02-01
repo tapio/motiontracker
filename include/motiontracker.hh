@@ -70,6 +70,12 @@ public:
 	int getFPS() const;
 
 	/**
+	  * Get the index number of the current frame.
+	  * @return the index
+	  */
+	unsigned getFrameIndex() const;
+
+	/**
 	 * Check if the device is in zombie state.
 	 * @return true if this class has no valid device
 	 */
@@ -83,6 +89,7 @@ private:
 	volatile bool m_quit;
 	cv::Mat m_latestFrame;
 	int m_fps;
+	unsigned m_frameIndex;
 };
 
 

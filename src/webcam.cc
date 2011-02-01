@@ -6,7 +6,7 @@
 #include "utils.hh"
 
 Webcam::Webcam(int device):
-  m_thread(), m_capture(), m_quit(false), m_latestFrame()
+  m_thread(), m_capture(), m_quit(false), m_latestFrame(), m_frameIndex()
   {
 	// Initialize the capture device
 	m_capture.reset(new cv::VideoCapture(device));
@@ -37,6 +37,7 @@ void Webcam::operator()() {
 			*m_capture >> newFrame;
 			boost::mutex::scoped_lock l(m_mutex);
 			m_latestFrame = newFrame;
+			++m_frameIndex;
 		} catch (std::exception&) { std::cerr << "Error capturing webcam frame!" << std::endl; }
 		counter();
 		boost::mutex::scoped_lock l(m_fpsmutex);
@@ -53,4 +54,9 @@ Webcam& Webcam::operator>>(cv::Mat& rhs) {
 int Webcam::getFPS() const {
 	boost::mutex::scoped_lock l(m_fpsmutex);
 	return m_fps;
+}
+
+unsigned Webcam::getFrameIndex() const {
+	boost::mutex::scoped_lock l(m_mutex);
+	return m_frameIndex;
 }
