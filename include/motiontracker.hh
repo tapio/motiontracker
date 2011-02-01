@@ -13,9 +13,6 @@ namespace cv {
 class Webcam;
 
 
-typedef void* DummyType; // FIXME
-
-
 struct CameraParameters
 {
 	float fx, fy, cx, cy; // Intrinsic parameters
@@ -115,15 +112,15 @@ public:
 
 	/**
 	 * Returns the current orientation of the tracked object.
-	 * @return the orientation
+	 * @return the orientation in a vector
 	 */
-	DummyType getOrientation();
+	cv::Vec3f getOrientation();
 
 	/**
 	 * Returns the current center position of the tracked object.
-	 * @return the position
+	 * @return the position in a vector
 	 */
-	DummyType getPosition();
+	cv::Vec3f getPosition();
 
 private:
 	Webcam &m_webcam;
@@ -152,7 +149,7 @@ struct FrameReceiver: public boost::noncopyable
 	 * This function is called every time a new frame is available.
 	 * @param frame the frame in an OpenCV matrix
 	 */
-	virtual void frameEvent(const cv::Mat&) {}
+	virtual void frameEvent(const cv::Mat& frame) { (void)frame; }
 
 private:
 
@@ -181,8 +178,10 @@ struct MotionReceiver: public boost::noncopyable
 
 	/**
 	 * This function is called every time new motion happens.
+	 * @param pos the position vector of the tracked object
+	 * @param rot the orientation vector of the tracked object
 	 */
-	virtual void motionEvent(/* Proper struct/vector/matrix parameter */);
+	virtual void motionEvent(cv::Vec3f pos, cv::Vec3f rot) { (void)pos; (void)rot; }
 
 
 	/** Reference to MotionTracker object used for polling motion events. */
