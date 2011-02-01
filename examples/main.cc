@@ -29,25 +29,43 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 
 	namedWindow("Calibration",1);
 	Mat frame;
-	Mat cornerImg;
+	Mat img;
 	int c;
 	while (successes < n_boards) {
 		while (waitKey(30) < 0) {
 			*cam >> frame;
+
 			if (!frame.empty()) {
 				imshow("Calibration", frame);
 			} else
 				cam->render();
+			displayOverlay("Calibration", "Press any key to take a picture",1);
 		}
 		bool patternFound = findChessboardCorners(frame,board_size,corners);
 
-		drawChessboardCorners(frame, board_size, Mat(corners), patternFound);
-		imshow("Calibration", frame);
-
-		if(patternFound)
-			successes++;
-		waitKey(0);
-
+		if (patternFound) {
+			cvtColor(frame, img, CV_BGR2GRAY);
+			drawChessboardCorners(img, board_size, Mat(corners), patternFound);
+			cornerSubPix(img,corners,Size(11,11), Size(-1,-1),TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+			imshow("Calibration", img);
+			displayOverlay("Calibration", "Press S to save calibration image or D to discard it", 1);
+			c = waitKey(0);
+			if(c == 's' || c == 'S') {
+				imshow("Calibration", img);
+				displayOverlay("Calibration", "Calibration image saved. Press any key to continue", 1);
+				successes++;
+				waitKey(0);
+			}
+			else if (c == 'd' || c == 'D') {
+				imshow("Calibration", img);
+				displayOverlay("Calibration", "Calibration image discarded. Press any key to continue", 1);
+				waitKey(0);
+			}			
+		} else {
+			imshow("Calibration",frame);
+			displayOverlay("Calibration","Could not detect calibration pattern in image. Press any key to continue",1);
+			waitKey(0);
+		}
 	}
 	destroyWindow("Calibration");
 	return;
