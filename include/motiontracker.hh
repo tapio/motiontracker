@@ -148,9 +148,9 @@ struct FrameReceiver: public boost::noncopyable
 
 	/**
 	 * This function is called every time a new frame is available.
-	 * @param cv::Mat mat the frame in an OpenCV matrix
+	 * @param frame the frame in an OpenCV matrix
 	 */
-	virtual void frameEvent(cv::Mat mat);
+	virtual void frameEvent(const cv::Mat&) {}
 
 private:
 
