@@ -11,20 +11,29 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 	Webcam* cam = (Webcam*)webcamPtr;
 	int n_boards = 3; // Number of pictures taken
 	const int board_dt = 20;
-	int board_w = 6; // Board with in squares
+	int board_w = 6; // Board width in squares
 	int board_h = 9; // Board height in squares
-	int board_n = board_w * board_h;
+	int board_n = board_h * board_w;
 	Size board_size = Size(board_w, board_h);
-/*
-	Mat image_points(n_boards*board_n, 2, CV_32FC1);
-	Mat object_points(n_boards*board_n, 2, CV_32FC1);
-	Mat point_counts(n_boards, 1, CV_32SC1);
-	Mat intrinsic_matrix(3, 3, CV_32FC1);
+
 	Mat distortion_coeffs(5, 1, CV_32FC1);
 
 	vector<Point2f> corners;
 	vector<vector<Point2f> > image_points2;
-	int corner_count;
+
+	// Here we assume that the calibration pattern is fully visible in every image,
+	// which means that object_points has n_boards same vectors
+
+	vector<Point3f> object_corners;
+	vector<vector<Point3f> > object_points2;
+
+	for (int i = 0; i < board_n; ++i) {
+		object_corners.push_back(Point3f(i / board_w, i % board_w, 0));
+	}
+
+	for (int i = 0; i < n_boards; ++i)
+		object_points2.push_back(object_corners);
+
 	int step, successes = 0;
 
 	namedWindow("Calibration", 1);
@@ -44,31 +53,19 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 
 		if (patternFound) {
 			cvtColor(frame, img, CV_BGR2GRAY);
-			drawChessboardCorners(img, board_size, Mat(corners), patternFound);
+			drawChessboardCorners(frame, board_size, Mat(corners), patternFound);
 			cornerSubPix(img, corners, Size(11,11), Size(-1,-1), TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-			imshow("Calibration", img);
+			imshow("Calibration", frame);
 			displayOverlay("Calibration", "Press S to save calibration image or any other key to discard it", 1);
 			c = waitKey(0);
-			// THIS PART IS B0RKED
-			// TODO: object_points and image_points should be vectors !
+
 			if (c == 's' || c == 'S') {
-				step = successes * board_n;
-				for (int i = step, j = 0; j < board_n; ++i, ++j) {
-					image_points.at<float>(i,0) = corners[j].x;
-					image_points.at<float>(i,1) = corners[j].y;
-					image_points2.push_back(corners);
-					object_points.at<float>(i,0) = j/board_w;
-					object_points.at<float>(i,1) = j%board_w;
-					object_points.at<float>(i,2) = 0.0f;
-				}
-				point_counts.at<int>(successes,0) = board_n;
-			// END OF B0RK
+				image_points2.push_back(corners);
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image saved. Press any key to continue", 1);
 				successes++;
 				waitKey(0);
-			}
-			else {
+			} else {
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image discarded. Press any key to continue", 1);
 				waitKey(0);
@@ -80,20 +77,26 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 		}
 	} // End of collection loop
 
-	// Initialize focal lenghts
-	intrinsic_matrix.at<float>(0,0) = 1.0f;
-	intrinsic_matrix.at<float>(1,1) = 1.0f;
+	Mat intrinsic_matrix = initCameraMatrix2D(object_points2, image_points2, frame.size());
+
+	std::cout << "Camera parameters:" << std::endl << "fx: " << intrinsic_matrix.at<float>(0,0) << std::endl;
+	std::cout << "fy: " << intrinsic_matrix.at<float>(1,1) << std::endl;
+	std::cout << "cx: " << intrinsic_matrix.at<float>(0,2) << std::endl;
+	std::cout << "cy: " << intrinsic_matrix.at<float>(2,2) << std::endl;
 
 	vector<Mat> rvecs;
 	vector<Mat> tvecs;
 	// Calibrate camera
-	calibrateCamera(object_points, image_points2, frame.size(), intrinsic_matrix, distortion_coeffs, rvecs, tvecs,0);
-	std::cout << intrinsic_matrix.at<float>(0,0) << std::endl;
-	std::cout << intrinsic_matrix.at<float>(1,1) << std::endl;
+	double error = calibrateCamera(object_points2, image_points2, Size(640,480), intrinsic_matrix, distortion_coeffs, rvecs, tvecs,0);
 
+	std::cout << "Camera parameters:" << std::endl << "fx: " << intrinsic_matrix.at<float>(0,0) << std::endl;
+	std::cout << "fy: " << intrinsic_matrix.at<float>(1,1) << std::endl;
+	std::cout << "cx: " << intrinsic_matrix.at<float>(0,2) << std::endl;
+	std::cout << "cy: " << intrinsic_matrix.at<float>(2,2) << std::endl;
+	std::cout << "estimation error: " << error << std::endl;
 	destroyWindow("Calibration");
 	return;
-	*/
+
 }
 
 
