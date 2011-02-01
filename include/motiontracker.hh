@@ -3,14 +3,15 @@
 #include <cv.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
-#include <boost/thread/thread.hpp>
 #include <boost/noncopyable.hpp>
 
 // Forward declarations
 namespace cv {
 	class VideoCapture;
 }
-
+namespace boost {
+	class thread;
+}
 
 struct CameraParameters
 {

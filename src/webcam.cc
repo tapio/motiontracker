@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <boost/thread/thread.hpp>
 #include <highgui.h>
 
 #include "motiontracker.hh"

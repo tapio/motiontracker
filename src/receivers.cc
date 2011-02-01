@@ -1,3 +1,4 @@
+#include <boost/thread/thread.hpp>
 #include "motiontracker.hh"
 
 FrameReceiver::FrameReceiver(Webcam &webcam)

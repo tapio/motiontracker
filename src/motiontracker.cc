@@ -1,4 +1,5 @@
 #include <iostream>
+#include <boost/thread/thread.hpp>
 #include "motiontracker.hh"
 #include "utils.hh"
 
