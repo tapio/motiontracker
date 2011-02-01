@@ -95,10 +95,7 @@ void cb_calibrateButton(int , void* webcamPtr) {
 	std::cout << "Distortion coefficients:" << std::endl;
 	std::cout << distortion_coeffs.at<double>(0,0) << " " << distortion_coeffs.at<double>(0,1) << " " << distortion_coeffs.at<double>(0,2) << " " << distortion_coeffs.at<double>(0,3) << std::endl;
 
-	FileStorage fs("calibration.xml", FileStorage::WRITE);
-	fs << "mtx" << intrinsic_matrix;
-	fs << "mtx" << distortion_coeffs;
-	fs.release();
+	CameraParameters(intrinsic_matrix, distortion_coeffs).saveToFile("calibration.xml");
 
 	destroyWindow("Calibration");
 	return;

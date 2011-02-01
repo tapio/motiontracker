@@ -15,11 +15,11 @@ class Webcam;
 
 struct CameraParameters
 {
-	float fx, fy, cx, cy; // Intrinsic parameters
-	float k1, k2, p1, p2; // Distortion coefficients
+	cv::Mat intrinsic_parameters; // Intrinsic parameters
+	cv::Mat distortion_coeffs; // Distortion coefficients
 	
 
-	CameraParameters();
+	CameraParameters(cv::Mat ip, cv::Mat dc);
 
 	/**
 	  * Saves the parameters to a configuration file.
