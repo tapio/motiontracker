@@ -94,57 +94,6 @@ private:
 
 
 /**
- * This class calculates object orientation and position from
- * a webcam video.
- */
-class MotionTracker: public boost::noncopyable
-{
-public:
-	/**
-	 * Constructor.
-	 * @param webcam reference to a valid webcam for getting video
-	 * @param camparams camera parameters from calibration
-	 */
-	MotionTracker(Webcam &webcam, const CameraParameters &camparams);
-	
-	/** Destructor. */
-	~MotionTracker();
-
-	/** Thread runs here, don't call directly. */
-	void operator()();
-
-	/**
-	 * Returns the current orientation of the tracked object.
-	 * @return the orientation in a vector
-	 */
-	cv::Vec3f getOrientation() const;
-
-	/**
-	 * Returns the current center position of the tracked object.
-	 * @return the position in a vector
-	 */
-	cv::Vec3f getPosition() const;
-
-	/**
-	 * Get frame rate.
-	 * @return frames per second
-	 */
-	int getFPS() const;
-
-private:
-	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
-	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
-	mutable boost::mutex m_mutex; /// Mutex
-	mutable boost::mutex m_fpsmutex; /// Mutex for FPS calculation & retrieving
-	bool m_quit; /// Flag telling to quit
-	cv::Vec3f m_pos;
-	cv::Vec3f m_rot;
-	int m_fps;
-};
-
-
-
-/**
  * This abstract class receives frames from a webcam.
  */
 struct FrameReceiver: public boost::noncopyable
@@ -154,7 +103,7 @@ struct FrameReceiver: public boost::noncopyable
 	 * @param webcam reference to a valid webcam for getting video
 	 */
 	FrameReceiver(Webcam &webcam);
-	
+
 	/** Destructor kills the listener thread. */
 	virtual ~FrameReceiver();
 
@@ -172,6 +121,43 @@ private:
 	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
 	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
 	bool m_quit; /// Flag telling the receiver to quit
+};
+
+
+
+/**
+ * This class calculates object orientation and position from
+ * a webcam video.
+ */
+class MotionTracker: public FrameReceiver
+{
+public:
+	/**
+	 * Constructor.
+	 * @param webcam reference to a valid webcam for getting video
+	 * @param camparams camera parameters from calibration
+	 */
+	MotionTracker(Webcam &webcam, const CameraParameters &camparams);
+
+	/** Thread calls this, don't call directly. */
+	void frameEvent(const cv::Mat& frame);
+
+	/**
+	 * Returns the current orientation of the tracked object.
+	 * @return the orientation in a vector
+	 */
+	cv::Vec3f getOrientation() const;
+
+	/**
+	 * Returns the current center position of the tracked object.
+	 * @return the position in a vector
+	 */
+	cv::Vec3f getPosition() const;
+
+private:
+	mutable boost::mutex m_mutex;
+	cv::Vec3f m_pos;
+	cv::Vec3f m_rot;
 };
 
 
