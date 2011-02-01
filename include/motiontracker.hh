@@ -96,16 +96,16 @@ private:
 /**
  * This abstract class receives frames from a webcam.
  */
-struct FrameReceiver: public boost::noncopyable
+struct WebcamListener: public boost::noncopyable
 {
 	/**
 	 * Constructor launches the listener thread.
 	 * @param webcam reference to a valid webcam for getting video
 	 */
-	FrameReceiver(Webcam &webcam);
+	WebcamListener(Webcam &webcam);
 
 	/** Destructor kills the listener thread. */
-	virtual ~FrameReceiver();
+	virtual ~WebcamListener();
 
 	/** Thread runs here, don't call directly. */
 	void operator()();
@@ -129,7 +129,7 @@ private:
  * This class calculates object orientation and position from
  * a webcam video.
  */
-class MotionTracker: public FrameReceiver
+class MotionTracker: public WebcamListener
 {
 public:
 	/**
@@ -165,15 +165,15 @@ private:
 /**
  * This abstract class receives motion events.
  */
-struct MotionReceiver: public boost::noncopyable
+struct MotionListener: public boost::noncopyable
 {
 	/**
 	 * Constructor launches the listener thread.
 	 */
-	MotionReceiver(MotionTracker &motiontracker);
+	MotionListener(MotionTracker &motiontracker);
 	
 	/** Destructor kills the listener thread. */
-	virtual ~MotionReceiver();
+	virtual ~MotionListener();
 
 	/** Thread runs here, don't call directly. */
 	void operator()();

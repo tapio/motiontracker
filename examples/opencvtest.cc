@@ -7,12 +7,12 @@
 
 using namespace cv;
 
-struct MyWebcamReceiver: public FrameReceiver {
+struct MyWebcamReceiver: public WebcamListener {
 	std::string window;
 	FPSCounter counter;
 
 	MyWebcamReceiver(Webcam& webcam, std::string win)
-		: FrameReceiver(webcam), window(win), counter(5)
+		: WebcamListener(webcam), window(win), counter(5)
 	{}
 
 	void frameEvent(const cv::Mat &frame) {

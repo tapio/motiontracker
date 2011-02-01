@@ -4,7 +4,7 @@
 #include "utils.hh"
 
 MotionTracker::MotionTracker(Webcam &webcam, const CameraParameters &camparams)
-	: FrameReceiver(webcam), m_pos(), m_rot()
+	: WebcamListener(webcam), m_pos(), m_rot()
 {
 	// TODO: Do stuff with camparams
 	(void)camparams;

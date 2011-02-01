@@ -1,19 +1,19 @@
 #include <boost/thread/thread.hpp>
 #include "motiontracker.hh"
 
-FrameReceiver::FrameReceiver(Webcam &webcam)
+WebcamListener::WebcamListener(Webcam &webcam)
 	: m_webcam(webcam), m_thread(), m_quit(false)
 {
 	// Start thread
 	m_thread.reset(new boost::thread(boost::ref(*this)));
 }
 
-FrameReceiver::~FrameReceiver() {
+WebcamListener::~WebcamListener() {
 	m_quit = true;
 	if (m_thread) m_thread->join();
 }
 
-void FrameReceiver::operator()() {
+void WebcamListener::operator()() {
 	unsigned frameId = 0;
 	cv::Mat frame;
 	while (!m_quit) {
@@ -30,19 +30,19 @@ void FrameReceiver::operator()() {
 
 
 
-MotionReceiver::MotionReceiver(MotionTracker &motiontracker)
+MotionListener::MotionListener(MotionTracker &motiontracker)
 	: m_motionTracker(motiontracker), m_thread(), m_quit(false)
 {
 	// Start thread
 	m_thread.reset(new boost::thread(boost::ref(*this)));
 }
 
-MotionReceiver::~MotionReceiver() {
+MotionListener::~MotionListener() {
 	m_quit = true;
 	if (m_thread) m_thread->join();
 }
 
-void MotionReceiver::operator()() {
+void MotionListener::operator()() {
 	cv::Vec3f pos, rot, prevpos, prevrot;
 	while (!m_quit) {
 		prevpos = pos; prevrot = rot;
