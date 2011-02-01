@@ -1,5 +1,7 @@
 #include "motiontracker.hh"
 
+CameraParameters::CameraParameters() : intrinsic_parameters(), distortion_coeffs()
+{ }
 
 CameraParameters::CameraParameters(cv::Mat ip, cv::Mat dc) : intrinsic_parameters(ip), distortion_coeffs(dc)
 { }

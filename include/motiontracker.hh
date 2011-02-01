@@ -17,8 +17,8 @@ struct CameraParameters
 {
 	cv::Mat intrinsic_parameters; // Intrinsic parameters
 	cv::Mat distortion_coeffs; // Distortion coefficients
-	
 
+	CameraParameters();
 	CameraParameters(cv::Mat ip, cv::Mat dc);
 
 	/**

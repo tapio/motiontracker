@@ -1,13 +1,17 @@
-set(EXENAME "tracker")
 
 list(APPEND LIBS MotionTracker)
 
-# Sources
+# Common sources
 include_directories("${INCDIR}")
-file(GLOB SOURCES *.cc ${INCDIR}/*.hh)
+file(GLOB HEADERS ${INCDIR}/*.hh)
 
-add_executable(${EXENAME} ${SOURCES})
-target_link_libraries(${EXENAME} ${LIBS})
+macro(example_app EXENAME)
+	add_executable(${EXENAME} ${HEADERS} ${EXENAME}.cc)
+	target_link_libraries(${EXENAME} ${LIBS})
+	install(TARGETS ${EXENAME} DESTINATION bin)
+endmacro()
 
-install(TARGETS ${EXENAME} DESTINATION bin)
+example_app(opencvtest)
+example_app(calibrator)
+example_app(tracker)
 
