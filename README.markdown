@@ -12,7 +12,15 @@ It consists of the following parts:
 
 Dependencies
 ------------
-Currently the project depends on Git (for fetching the sources) and CMake (for building) plus the following libraries:
+
+Required tools:
+
+* C++ compiler
+* _CMake_ (for generating Makefiles / project files)
+* Optional: _Git_ (for fetching the sources)
+* Optional: _Doxygen_ (for building documentation)
+
+Required libraries:
 
 * OpenCV (>= 2.1.0 to work with CMake, >= 2.2.0 with Qt GUI enabled for examples)
 * Boost (headers and thread-component)
