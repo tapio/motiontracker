@@ -21,7 +21,7 @@ void MotionTracker::frameEvent(const cv::Mat& frame) {
 	m_rot = rot;
 }
 
-cv::Vec3f MotionTracker::getOrientation() const {
+cv::Vec3f MotionTracker::getRotation() const {
 	boost::mutex::scoped_lock l(m_mutex);
 	return m_rot;
 }

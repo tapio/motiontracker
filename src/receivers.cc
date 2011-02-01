@@ -47,7 +47,7 @@ void MotionListener::operator()() {
 	while (!m_quit) {
 		prevpos = pos; prevrot = rot;
 		pos = m_motionTracker.getPosition();
-		rot = m_motionTracker.getOrientation();
+		rot = m_motionTracker.getRotation();
 		// Check for change
 		if (pos != prevpos || rot != prevrot) {
 			motionEvent(pos, rot);

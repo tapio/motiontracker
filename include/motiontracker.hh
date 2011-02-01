@@ -146,7 +146,7 @@ public:
 	 * Returns the current orientation of the tracked object.
 	 * @return the orientation in a vector
 	 */
-	cv::Vec3f getOrientation() const;
+	cv::Vec3f getRotation() const;
 
 	/**
 	 * Returns the current center position of the tracked object.
