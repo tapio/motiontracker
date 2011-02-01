@@ -16,6 +16,28 @@ namespace cv {
 typedef void* DummyType; // FIXME
 
 
+struct CameraParameters
+{
+	/* TODO: Here be the parameters */
+
+	CameraParameters();
+
+	/**
+	  * Saves the parameters to a configuration file.
+	  * @param filename path to the file used for saving
+	  */
+	void saveToFile(std::string filename);
+
+	/**
+	  * Creates a new object by reading the parameters from a file.
+	  * @param filename path to the file used for reading
+	  * @return new object containing the read parameters
+	  */
+	static CameraParameters fromFile(std::string filename);
+};
+
+
+
 /**
  * This class opens a webcam and gets frames from it.
  */
@@ -82,8 +104,9 @@ public:
 	/**
 	 * Constructor.
 	 * @param webcam reference to a valid webcam for getting video
+	 * @param camparams camera parameters from calibration
 	 */
-	MotionTracker(Webcam &webcam /* Calibration parameters */);
+	MotionTracker(Webcam &webcam, const CameraParameters &camparams);
 	
 	/** Destructor. */
 	~MotionTracker();
