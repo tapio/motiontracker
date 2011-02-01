@@ -74,12 +74,6 @@ int Webcam::getFPS() const {
 	return m_fps;
 }
 
-void Webcam::pause(bool do_pause) {
-	boost::mutex::scoped_lock l(m_mutex);
-	m_running = !do_pause;
-	m_frameAvailable = false;
-}
-
 void Webcam::render() {
 	if (!m_capture || !m_running) return;
 	// Do we have a new frame available?

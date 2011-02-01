@@ -18,27 +18,41 @@ typedef void* DummyType; // FIXME
 
 /**
  * This class opens a webcam and gets frames from it.
- * TODO: This class needs clean-up and commenting
  */
 class Webcam
 {
 public:
-	/// cam_id -1 means pick any device
-	Webcam(int cam_id = -1);
+	/**
+	 * Opens up a video capture device and starts recieving frames.
+	 * @param device the capture deivce id, -1 means auto pick
+	 */
+	Webcam(int device = -1);
 
+	/** Destructor closes device. */
 	~Webcam();
 
-	/// Thread runs here, don't call directly
+	/** Thread runs here, don't call directly. */
 	void operator()();
 
+	/**
+	 * Retrieve the latest frame.
+	 * @param rhs the OpenCV matrix where the frame is stored
+	 * @return a reference to the class it self for chaining
+	 */
 	Webcam& operator>>(cv::Mat& rhs);
 
-	/// Get frame rate
+	/**
+	 * Get frame rate.
+	 * @return frames per second
+	 */
 	int getFPS() const;
-	/// Capture failed to initialize?
+
+	/**
+	 * Check if the device is in zombie state.
+	 * @return true if this class has no valid device
+	 */
 	bool isNull() { return m_capture == 0; }
-	/// When paused, does not get or render frames
-	void pause(bool do_pause = true);
+
 	/// Display frame
 	void render();
 
@@ -93,20 +107,20 @@ private:
 
 
 /**
- * This abstract class recieves frames from a webcam.
+ * This abstract class receives frames from a webcam.
  */
-struct FrameReciever
+struct FrameReceiver
 {
 	/**
 	 * Constructor launches the listener thread.
 	 * @param webcam reference to a valid webcam for getting video
 	 */
-	FrameReciever(Webcam &webcam);
+	FrameReceiver(Webcam &webcam);
 	
 	/** Destructor kills the listener thread. */
-	~FrameReciever();
+	~FrameReceiver();
 
-	/** Thread runs here. Don't call directly. */
+	/** Thread runs here, don't call directly. */
 	void operator()();
 
 	/**
@@ -123,19 +137,19 @@ struct FrameReciever
 
 
 /**
- * This abstract class recieves motion events.
+ * This abstract class receives motion events.
  */
-struct MotionReciever
+struct MotionReceiver
 {
 	/**
 	 * Constructor launches the listener thread.
 	 */
-	MotionReciever(MotionTracker &motiontracker);
+	MotionReceiver(MotionTracker &motiontracker);
 	
 	/** Destructor kills the listener thread. */
-	~MotionReciever();
+	~MotionReceiver();
 
-	/** Thread runs here. Don't call directly. */
+	/** Thread runs here, don't call directly. */
 	void operator()();
 
 	/**
