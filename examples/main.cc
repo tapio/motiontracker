@@ -16,7 +16,7 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 	int board_h = 9; // Board height in squares
 	int board_n = board_w * board_h;
 	Size board_size = Size(board_w, board_h);
-
+/*
 	Mat image_points(n_boards*board_n, 2, CV_32FC1);
 	Mat object_points(n_boards*board_n, 2, CV_32FC1);
 	Mat point_counts(n_boards, 1, CV_32SC1);
@@ -95,6 +95,7 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 
 	destroyWindow("Calibration");
 	return;
+	*/
 }
 
 int main(int argc, char** argv)
