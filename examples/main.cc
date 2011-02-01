@@ -17,17 +17,17 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 	int board_n = board_w * board_h;
 	Size board_size = Size(board_w, board_h);
 
-	Mat image_points(n_boards*board_n,2,CV_32FC1);
-	Mat object_points(n_boards*board_n,2, CV_32FC1);
+	Mat image_points(n_boards*board_n, 2, CV_32FC1);
+	Mat object_points(n_boards*board_n, 2, CV_32FC1);
 	Mat point_counts(n_boards, 1, CV_32SC1);
-	Mat intrinsic_matrix(3,3,CV_32FC1);
-	Mat distortion_coeffs(5,1,CV_32FC1);
+	Mat intrinsic_matrix(3, 3, CV_32FC1);
+	Mat distortion_coeffs(5, 1, CV_32FC1);
 
 	vector<Point2f> corners;
 	int corner_count;
 	int successes = 0;
 
-	namedWindow("Calibration",1);
+	namedWindow("Calibration", 1);
 	Mat frame;
 	Mat img;
 	int c;
@@ -39,18 +39,18 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 				imshow("Calibration", frame);
 			} else
 				cam->render();
-			displayOverlay("Calibration", "Press any key to take a picture",1);
+			displayOverlay("Calibration", "Press any key to take a picture", 1);
 		}
-		bool patternFound = findChessboardCorners(frame,board_size,corners);
+		bool patternFound = findChessboardCorners(frame, board_size, corners);
 
 		if (patternFound) {
 			cvtColor(frame, img, CV_BGR2GRAY);
 			drawChessboardCorners(img, board_size, Mat(corners), patternFound);
-			cornerSubPix(img,corners,Size(11,11), Size(-1,-1),TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+			cornerSubPix(img, corners, Size(11,11), Size(-1,-1), TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
 			imshow("Calibration", img);
 			displayOverlay("Calibration", "Press S to save calibration image or D to discard it", 1);
 			c = waitKey(0);
-			if(c == 's' || c == 'S') {
+			if (c == 's' || c == 'S') {
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image saved. Press any key to continue", 1);
 				successes++;
@@ -60,10 +60,10 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image discarded. Press any key to continue", 1);
 				waitKey(0);
-			}			
+			}
 		} else {
-			imshow("Calibration",frame);
-			displayOverlay("Calibration","Could not detect calibration pattern in image. Press any key to continue",1);
+			imshow("Calibration", frame);
+			displayOverlay("Calibration", "Could not detect calibration pattern in image. Press any key to continue", 1);
 			waitKey(0);
 		}
 	}
@@ -86,8 +86,8 @@ int main(int argc, char** argv)
 
 	Mat frame;
 	Mat edges;
-	namedWindow("video",1);
-	createButton("Calibrate",cb_calibrateButton,webcam.get(),CV_CHECKBOX);
+	namedWindow("video", 1);
+	createButton("Calibrate", cb_calibrateButton,webcam.get(), CV_CHECKBOX);
 	FPSCounter counter(5);
 	while (waitKey(5) < 0) {
 		*webcam >> frame;
