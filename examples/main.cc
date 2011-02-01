@@ -24,8 +24,9 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 	Mat distortion_coeffs(5, 1, CV_32FC1);
 
 	vector<Point2f> corners;
+	vector<vector<Point2f> > image_points2;
 	int corner_count;
-	int successes = 0;
+	int step, successes = 0;
 
 	namedWindow("Calibration", 1);
 	Mat frame;
@@ -48,15 +49,28 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 			drawChessboardCorners(img, board_size, Mat(corners), patternFound);
 			cornerSubPix(img, corners, Size(11,11), Size(-1,-1), TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
 			imshow("Calibration", img);
-			displayOverlay("Calibration", "Press S to save calibration image or D to discard it", 1);
+			displayOverlay("Calibration", "Press S to save calibration image or any other key to discard it", 1);
 			c = waitKey(0);
+			// THIS PART IS B0RKED
+			// TODO: object_points and image_points should be vectors !
 			if (c == 's' || c == 'S') {
+				step = successes * board_n;
+				for (int i = step, j = 0; j < board_n; ++i, ++j) {
+					image_points.at<float>(i,0) = corners[j].x;
+					image_points.at<float>(i,1) = corners[j].y;
+					image_points2.push_back(corners);
+					object_points.at<float>(i,0) = j/board_w;
+					object_points.at<float>(i,1) = j%board_w;
+					object_points.at<float>(i,2) = 0.0f;
+				}
+				point_counts.at<int>(successes,0) = board_n;
+			// END OF B0RK
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image saved. Press any key to continue", 1);
 				successes++;
 				waitKey(0);
 			}
-			else if (c == 'd' || c == 'D') {
+			else {
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image discarded. Press any key to continue", 1);
 				waitKey(0);
@@ -66,7 +80,19 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 			displayOverlay("Calibration", "Could not detect calibration pattern in image. Press any key to continue", 1);
 			waitKey(0);
 		}
-	}
+	} // End of collection loop
+
+	// Initialize focal lenghts
+	intrinsic_matrix.at<float>(0,0) = 1.0f;
+	intrinsic_matrix.at<float>(1,1) = 1.0f;
+
+	vector<Mat> rvecs;
+	vector<Mat> tvecs;
+	// Calibrate camera
+	calibrateCamera(object_points, image_points2, frame.size(), intrinsic_matrix, distortion_coeffs, rvecs, tvecs,0);
+	std::cout << intrinsic_matrix.at<float>(0,0) << std::endl;
+	std::cout << intrinsic_matrix.at<float>(1,1) << std::endl;
+
 	destroyWindow("Calibration");
 	return;
 }
