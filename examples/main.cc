@@ -1,9 +1,9 @@
 #include <iostream>
+#include <cv.h>
+#include <highgui.h>
+#include <boost/lexical_cast.hpp>
 #include "motiontracker.hh"
 #include "utils.hh"
-#include "cv.h"
-#include "highgui.h"
-#include <boost/lexical_cast.hpp>
 
 using namespace cv;
 
