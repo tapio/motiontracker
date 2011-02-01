@@ -3,7 +3,7 @@
 #include <highgui.h>
 #include <boost/lexical_cast.hpp>
 
-#include "webcam.hh"
+#include "motiontracker.hh"
 #include "utils.hh"
 
 Webcam::Webcam(int cam_id):
