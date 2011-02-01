@@ -1,0 +1,7 @@
+# Doxyfile 1.7.1
+
+PROJECT_NAME           = MotionTracker
+PROJECT_NUMBER         =
+OUTPUT_DIRECTORY       = doxygen
+INPUT                  = include src
+
