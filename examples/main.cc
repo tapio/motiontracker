@@ -7,12 +7,14 @@
 
 using namespace cv;
 
-void cb_calibrateButton(int n, void* webcamPtr) {
+void cb_calibrateButton(int , void* webcamPtr) {
 	Webcam* cam = (Webcam*)webcamPtr;
 
 	int n_boards = 8;	// Number of pictures taken
 	int board_w = 6;	// Board width in squares
 	int board_h = 9;	// Board height in squares
+
+	float boardScaleFactor = 25; // Chessboard square edge length in units you want to use
 
 	int numCorners = board_h * board_w;
 	Size board_size = Size(board_w, board_h);
@@ -26,7 +28,7 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 	int successes = 0;
 
 	for (int i = 0; i < numCorners; ++i) {
-		object_corners.push_back(Point3f(i / board_h, i % board_h, 0.0f));
+		object_corners.push_back(Point3f(boardScaleFactor*(i / board_h), boardScaleFactor*(i % board_h), 0.0f));
 	}
 
 	namedWindow("Calibration", 1);
@@ -92,6 +94,11 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 
 	std::cout << "Distortion coefficients:" << std::endl;
 	std::cout << distortion_coeffs.at<double>(0,0) << " " << distortion_coeffs.at<double>(0,1) << " " << distortion_coeffs.at<double>(0,2) << " " << distortion_coeffs.at<double>(0,3) << std::endl;
+
+	FileStorage fs("calibration.xml", FileStorage::WRITE);
+	fs << "mtx" << intrinsic_matrix;
+	fs << "mtx" << distortion_coeffs;
+	fs.release();
 
 	destroyWindow("Calibration");
 	return;
