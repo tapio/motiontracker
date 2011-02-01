@@ -4,6 +4,7 @@ cmake_policy(VERSION 2.6)
 set(PROJECT_VERSION "alpha")
 
 option(BUILD_EXAMPLES "Build the example program(s)." ON)
+option(BUILD_APIDOC "Build the API documentation with Doxygen." ON)
 option(BUILD_SHARED_LIBS "Build shared/dynamic library instead of a static one." OFF) # Default to static
 
 # Avoid source tree pollution
@@ -28,6 +29,28 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -pthread")
 	endif(NOT WIN32)
 endif()
+
+
+# Doxygen API documentation
+if(BUILD_APIDOC)
+	find_package(Doxygen)
+	if(DOXYGEN_FOUND)
+		configure_file(${CMAKE_SOURCE_DIR}/Doxyfile.in ${CMAKE_BINARY_DIR}/Doxyfile @ONLY)
+		add_custom_command(
+			OUTPUT ${CMAKE_BINARY_DIR}/doxygen
+			COMMAND ${DOXYGEN_EXECUTABLE}
+			ARGS ${CMAKE_BINARY_DIR}/Doxyfile
+			DEPENDS ${CMAKE_SOURCE_DIR}/include/*.hh
+			COMMENT "Generating API documentation with Doxygen" VERBATIM
+		)
+		add_custom_target(doc ALL
+			DEPENDS ${CMAKE_BINARY_DIR}/doxygen)
+	else()
+		message(WARNING "Doxygen not found, disabling API documentation generation.")
+		set(BUILD_APIDOC OFF)
+	endif()
+endif()
+
 
 # Libraries
 
