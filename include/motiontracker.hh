@@ -152,9 +152,11 @@ struct FrameReceiver: public boost::noncopyable
 	 */
 	virtual void frameEvent(cv::Mat mat);
 
+private:
 
-	/** Reference to the Webcam object used for polling frames. */
-	Webcam &webcam;
+	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
+	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
+	bool m_quit; /// Flag telling the receiver to quit
 };
 
 
