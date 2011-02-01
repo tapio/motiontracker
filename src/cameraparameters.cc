@@ -15,7 +15,7 @@ void CameraParameters::saveToFile(std::string filename)
 	fs.release();
 	}
 	catch (cv::Exception& e) {
-		throw e;
+		throw std::runtime_error(e.what());
 	}
 }
 
@@ -30,7 +30,7 @@ CameraParameters CameraParameters::fromFile(std::string filename)
 		fs.release();
 	}
 	catch (cv::Exception& e) {
-		throw e;
+		throw std::runtime_error(e.what());
 	}
 	return CameraParameters(ip, dc);
 }
