@@ -4,7 +4,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
-
+#include <boost/noncopyable.hpp>
 
 // Forward declarations
 namespace cv {
@@ -41,7 +41,7 @@ struct CameraParameters
 /**
  * This class opens a webcam and gets frames from it.
  */
-class Webcam
+class Webcam: public boost::noncopyable
 {
 public:
 	/**
@@ -98,7 +98,7 @@ private:
  * This class calculates object orientation and position from
  * a webcam video.
  */
-class MotionTracker
+class MotionTracker: public boost::noncopyable
 {
 public:
 	/**
@@ -132,7 +132,7 @@ private:
 /**
  * This abstract class receives frames from a webcam.
  */
-struct FrameReceiver
+struct FrameReceiver: public boost::noncopyable
 {
 	/**
 	 * Constructor launches the listener thread.
@@ -162,7 +162,7 @@ struct FrameReceiver
 /**
  * This abstract class receives motion events.
  */
-struct MotionReceiver
+struct MotionReceiver: public boost::noncopyable
 {
 	/**
 	 * Constructor launches the listener thread.
