@@ -75,9 +75,6 @@ public:
 	 */
 	bool isNull() { return m_capture == 0; }
 
-	/// Display frame
-	void render();
-
 private:
 	boost::scoped_ptr<boost::thread> m_thread;
 	mutable boost::mutex m_mutex;

@@ -37,8 +37,7 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 
 			if (!frame.empty()) {
 				imshow("Calibration", frame);
-			} else
-				cam->render();
+			}
 			displayOverlay("Calibration", "Press any key to take a picture", 1);
 		}
 		bool patternFound = findChessboardCorners(frame, board_size, corners);
@@ -126,8 +125,7 @@ int main(int argc, char** argv)
 			putText(edges, boost::lexical_cast<std::string>(webcam->getFPS()),
 				cv::Point(0,60), cv::FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 			imshow("video", edges);
-		} else
-			webcam->render();
+		}
 		counter();
 	}
 	cvDestroyAllWindows();

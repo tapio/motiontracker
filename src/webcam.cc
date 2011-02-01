@@ -73,19 +73,3 @@ int Webcam::getFPS() const {
 	boost::mutex::scoped_lock l(m_fpsmutex);
 	return m_fps;
 }
-
-void Webcam::render() {
-	if (!m_capture || !m_running) return;
-	// Do we have a new frame available?
-	if (m_frameAvailable) {
-		boost::mutex::scoped_lock l(m_mutex);
-		// Load the image
-		m_displayFrame = m_latestFrame;
-		m_frameAvailable = false;
-		//XXX.load(m_frame.width, m_frame.height, pix::BGR, &m_frame.data[0]);
-	}
-	try {
-		if (!m_displayFrame.empty())
-			imshow("video", m_displayFrame);
-	} catch (...) {}
-}
