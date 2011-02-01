@@ -9,12 +9,12 @@ using namespace cv;
 
 void cb_calibrateButton(int n, void* webcamPtr) {
 	Webcam* cam = (Webcam*)webcamPtr;
-	int n_boards = 3; // Number of pictures taken
+	int n_boards = 4; // Number of pictures taken
 	const int board_dt = 20;
 	int board_w = 6; // Board width in squares
 	int board_h = 9; // Board height in squares
 	int board_n = board_h * board_w;
-	Size board_size = Size(board_w, board_h);
+	Size board_size = Size(board_h, board_w);
 
 	Mat distortion_coeffs(5, 1, CV_32FC1);
 
@@ -31,10 +31,7 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 		object_corners.push_back(Point3f(i / board_w, i % board_w, 0));
 	}
 
-	for (int i = 0; i < n_boards; ++i)
-		object_points2.push_back(object_corners);
-
-	int step, successes = 0;
+	int successes = 0;
 
 	namedWindow("Calibration", 1);
 	Mat frame;
@@ -61,6 +58,7 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 
 			if (c == 's' || c == 'S') {
 				image_points2.push_back(corners);
+				object_points2.push_back(object_corners);
 				imshow("Calibration", img);
 				displayOverlay("Calibration", "Calibration image saved. Press any key to continue", 1);
 				successes++;
@@ -77,23 +75,34 @@ void cb_calibrateButton(int n, void* webcamPtr) {
 		}
 	} // End of collection loop
 
-	Mat intrinsic_matrix = initCameraMatrix2D(object_points2, image_points2, frame.size());
+	Mat intrinsic_matrix(3,3,CV_32FC1);
+	intrinsic_matrix.at<float>(0,0) = 1; // fx
+	intrinsic_matrix.at<float>(0,1) = 0;
+	intrinsic_matrix.at<float>(0,2) = 0; // cx
 
-	std::cout << "Camera parameters:" << std::endl << "fx: " << intrinsic_matrix.at<float>(0,0) << std::endl;
-	std::cout << "fy: " << intrinsic_matrix.at<float>(1,1) << std::endl;
-	std::cout << "cx: " << intrinsic_matrix.at<float>(0,2) << std::endl;
-	std::cout << "cy: " << intrinsic_matrix.at<float>(2,2) << std::endl;
+	intrinsic_matrix.at<float>(1,0) = 0;
+	intrinsic_matrix.at<float>(1,1) = 1;	// fy
+	intrinsic_matrix.at<float>(1,2) = 0;  // cy
+
+	intrinsic_matrix.at<float>(2,0) = 0;
+	intrinsic_matrix.at<float>(2,0) = 0;
+	intrinsic_matrix.at<float>(2,2) = 1;	// needs to be 1
+
+	std::cout << "Intrinsic matrix:" << std::endl;
+	std::cout << intrinsic_matrix.at<float>(0,0) << " " << intrinsic_matrix.at<float>(0,1) << " " << intrinsic_matrix.at<float>(0,2) << std::endl;
+	std::cout << intrinsic_matrix.at<float>(1,0) << " " <<  intrinsic_matrix.at<float>(1,1)<< " " << intrinsic_matrix.at<float>(1,2) << std::endl;
+	std::cout << intrinsic_matrix.at<float>(2,0) << " " << intrinsic_matrix.at<float>(2,1) << " " << intrinsic_matrix.at<float>(2,2) << std::endl;
 
 	vector<Mat> rvecs;
 	vector<Mat> tvecs;
 	// Calibrate camera
-	double error = calibrateCamera(object_points2, image_points2, Size(640,480), intrinsic_matrix, distortion_coeffs, rvecs, tvecs,0);
+	double error = calibrateCamera(object_points2, image_points2, Size(640,480), intrinsic_matrix, distortion_coeffs, rvecs, tvecs, CV_CALIB_USE_INTRINSIC_GUESS);
 
-	std::cout << "Camera parameters:" << std::endl << "fx: " << intrinsic_matrix.at<float>(0,0) << std::endl;
-	std::cout << "fy: " << intrinsic_matrix.at<float>(1,1) << std::endl;
-	std::cout << "cx: " << intrinsic_matrix.at<float>(0,2) << std::endl;
-	std::cout << "cy: " << intrinsic_matrix.at<float>(2,2) << std::endl;
-	std::cout << "estimation error: " << error << std::endl;
+	std::cout << "Intrinsic matrix after calibration:" << std::endl;
+	std::cout << intrinsic_matrix.at<float>(0,0) << " " << intrinsic_matrix.at<float>(0,1) << " " << intrinsic_matrix.at<float>(0,2) << std::endl;
+	std::cout << intrinsic_matrix.at<float>(1,0) << " " <<  intrinsic_matrix.at<float>(1,1)<< " " << intrinsic_matrix.at<float>(1,2) << std::endl;
+	std::cout << intrinsic_matrix.at<float>(2,0) << " " << intrinsic_matrix.at<float>(2,1) << " " << intrinsic_matrix.at<float>(2,2) << std::endl;
+
 	destroyWindow("Calibration");
 	return;
 
