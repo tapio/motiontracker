@@ -8,7 +8,7 @@
 
 // Forward declarations
 namespace cv {
-    class VideoCapture;
+	class VideoCapture;
 }
 class Webcam;
 
@@ -18,24 +18,24 @@ typedef void* DummyType; // FIXME
 
 struct CameraParameters
 {
-    float fx, fy, cx, cy; // Intrinsic parameters
-    float k1, k2, p1, p2; // Distortion coefficients
-    
+	float fx, fy, cx, cy; // Intrinsic parameters
+	float k1, k2, p1, p2; // Distortion coefficients
+	
 
-    CameraParameters();
+	CameraParameters();
 
-    /**
-      * Saves the parameters to a configuration file.
-      * @param filename path to the file used for saving
-      */
-    void saveToFile(std::string filename);
+	/**
+	  * Saves the parameters to a configuration file.
+	  * @param filename path to the file used for saving
+	  */
+	void saveToFile(std::string filename);
 
-    /**
-      * Creates a new object by reading the parameters from a file.
-      * @param filename path to the file used for reading
-      * @return new object containing the read parameters
-      */
-    static CameraParameters fromFile(std::string filename);
+	/**
+	  * Creates a new object by reading the parameters from a file.
+	  * @param filename path to the file used for reading
+	  * @return new object containing the read parameters
+	  */
+	static CameraParameters fromFile(std::string filename);
 };
 
 
@@ -46,52 +46,52 @@ struct CameraParameters
 class Webcam: public boost::noncopyable
 {
 public:
-    /**
-     * Opens up a video capture device and starts recieving frames.
-     * @param device the capture deivce id, -1 means auto pick
-     */
-    Webcam(int device = -1);
+	/**
+	 * Opens up a video capture device and starts recieving frames.
+	 * @param device the capture deivce id, -1 means auto pick
+	 */
+	Webcam(int device = -1);
 
-    /** Destructor closes device. */
-    ~Webcam();
+	/** Destructor closes device. */
+	~Webcam();
 
-    /** Thread runs here, don't call directly. */
-    void operator()();
+	/** Thread runs here, don't call directly. */
+	void operator()();
 
-    /**
-     * Retrieve the latest frame.
-     * @param rhs the OpenCV matrix where the frame is stored
-     * @return a reference to the class it self for chaining
-     */
-    Webcam& operator>>(cv::Mat& rhs);
+	/**
+	 * Retrieve the latest frame.
+	 * @param rhs the OpenCV matrix where the frame is stored
+	 * @return a reference to the class it self for chaining
+	 */
+	Webcam& operator>>(cv::Mat& rhs);
 
-    /**
-     * Get frame rate.
-     * @return frames per second
-     */
-    int getFPS() const;
+	/**
+	 * Get frame rate.
+	 * @return frames per second
+	 */
+	int getFPS() const;
 
-    /**
-      * Get the index number of the current frame.
-      * @return the index
-      */
-    unsigned getFrameIndex() const;
+	/**
+	  * Get the index number of the current frame.
+	  * @return the index
+	  */
+	unsigned getFrameIndex() const;
 
-    /**
-     * Check if the device is in zombie state.
-     * @return true if this class has no valid device
-     */
-    bool isNull() { return m_capture == 0; }
+	/**
+	 * Check if the device is in zombie state.
+	 * @return true if this class has no valid device
+	 */
+	bool isNull() { return m_capture == 0; }
 
 private:
-    boost::scoped_ptr<boost::thread> m_thread;
-    boost::scoped_ptr<cv::VideoCapture> m_capture;
-    mutable boost::mutex m_mutex;
-    mutable boost::mutex m_fpsmutex;
-    volatile bool m_quit;
-    cv::Mat m_latestFrame;
-    int m_fps;
-    unsigned m_frameIndex;
+	boost::scoped_ptr<boost::thread> m_thread;
+	boost::scoped_ptr<cv::VideoCapture> m_capture;
+	mutable boost::mutex m_mutex;
+	mutable boost::mutex m_fpsmutex;
+	volatile bool m_quit;
+	cv::Mat m_latestFrame;
+	int m_fps;
+	unsigned m_frameIndex;
 };
 
 
@@ -103,30 +103,30 @@ private:
 class MotionTracker: public boost::noncopyable
 {
 public:
-    /**
-     * Constructor.
-     * @param webcam reference to a valid webcam for getting video
-     * @param camparams camera parameters from calibration
-     */
-    MotionTracker(Webcam &webcam, const CameraParameters &camparams);
-    
-    /** Destructor. */
-    ~MotionTracker();
+	/**
+	 * Constructor.
+	 * @param webcam reference to a valid webcam for getting video
+	 * @param camparams camera parameters from calibration
+	 */
+	MotionTracker(Webcam &webcam, const CameraParameters &camparams);
+	
+	/** Destructor. */
+	~MotionTracker();
 
-    /**
-     * Returns the current orientation of the tracked object.
-     * @return the orientation
-     */
-    DummyType getOrientation();
+	/**
+	 * Returns the current orientation of the tracked object.
+	 * @return the orientation
+	 */
+	DummyType getOrientation();
 
-    /**
-     * Returns the current center position of the tracked object.
-     * @return the position
-     */
-    DummyType getPosition();
+	/**
+	 * Returns the current center position of the tracked object.
+	 * @return the position
+	 */
+	DummyType getPosition();
 
 private:
-    Webcam &m_webcam;
+	Webcam &m_webcam;
 };
 
 
@@ -136,29 +136,29 @@ private:
  */
 struct FrameReceiver: public boost::noncopyable
 {
-    /**
-     * Constructor launches the listener thread.
-     * @param webcam reference to a valid webcam for getting video
-     */
-    FrameReceiver(Webcam &webcam);
-    
-    /** Destructor kills the listener thread. */
-    ~FrameReceiver();
+	/**
+	 * Constructor launches the listener thread.
+	 * @param webcam reference to a valid webcam for getting video
+	 */
+	FrameReceiver(Webcam &webcam);
+	
+	/** Destructor kills the listener thread. */
+	~FrameReceiver();
 
-    /** Thread runs here, don't call directly. */
-    void operator()();
+	/** Thread runs here, don't call directly. */
+	void operator()();
 
-    /**
-     * This function is called every time a new frame is available.
-     * @param frame the frame in an OpenCV matrix
-     */
-    virtual void frameEvent(const cv::Mat&) {}
+	/**
+	 * This function is called every time a new frame is available.
+	 * @param frame the frame in an OpenCV matrix
+	 */
+	virtual void frameEvent(const cv::Mat&) {}
 
 private:
 
-    Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
-    boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
-    bool m_quit; /// Flag telling the receiver to quit
+	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
+	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
+	bool m_quit; /// Flag telling the receiver to quit
 };
 
 
@@ -168,25 +168,25 @@ private:
  */
 struct MotionReceiver: public boost::noncopyable
 {
-    /**
-     * Constructor launches the listener thread.
-     */
-    MotionReceiver(MotionTracker &motiontracker);
-    
-    /** Destructor kills the listener thread. */
-    ~MotionReceiver();
+	/**
+	 * Constructor launches the listener thread.
+	 */
+	MotionReceiver(MotionTracker &motiontracker);
+	
+	/** Destructor kills the listener thread. */
+	~MotionReceiver();
 
-    /** Thread runs here, don't call directly. */
-    void operator()();
+	/** Thread runs here, don't call directly. */
+	void operator()();
 
-    /**
-     * This function is called every time new motion happens.
-     */
-    virtual void motionEvent(/* Proper struct/vector/matrix parameter */);
+	/**
+	 * This function is called every time new motion happens.
+	 */
+	virtual void motionEvent(/* Proper struct/vector/matrix parameter */);
 
 
-    /** Reference to MotionTracker object used for polling motion events. */
-    MotionTracker &motionTracker;
+	/** Reference to MotionTracker object used for polling motion events. */
+	MotionTracker &motionTracker;
 };
 
 
