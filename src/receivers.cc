@@ -25,3 +25,31 @@ void FrameReceiver::operator()() {
 		}
 	}
 }
+
+
+
+
+MotionReceiver::MotionReceiver(MotionTracker &motiontracker)
+	: m_motionTracker(motiontracker), m_thread(), m_quit(false)
+{
+	// Start thread
+	m_thread.reset(new boost::thread(boost::ref(*this)));
+}
+
+MotionReceiver::~MotionReceiver() {
+	m_quit = true;
+	if (m_thread) m_thread->join();
+}
+
+void MotionReceiver::operator()() {
+	cv::Vec3f pos, rot, prevpos, prevrot;
+	while (!m_quit) {
+		prevpos = pos; prevrot = rot;
+		pos = m_motionTracker.getPosition();
+		rot = m_motionTracker.getOrientation();
+		// Check for change
+		if (pos != prevpos || rot != prevrot) {
+			motionEvent(pos, rot);
+		}
+	}
+}

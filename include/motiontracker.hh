@@ -123,7 +123,9 @@ public:
 	cv::Vec3f getPosition();
 
 private:
-	Webcam &m_webcam;
+	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
+	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
+	bool m_quit; /// Flag telling to quit
 };
 
 
@@ -183,9 +185,11 @@ struct MotionReceiver: public boost::noncopyable
 	 */
 	virtual void motionEvent(cv::Vec3f pos, cv::Vec3f rot) { (void)pos; (void)rot; }
 
+private:
 
-	/** Reference to MotionTracker object used for polling motion events. */
-	MotionTracker &motionTracker;
+	MotionTracker &m_motionTracker; /// Reference to MotionTracker object used for polling motion events.
+	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
+	bool m_quit; /// Flag telling the receiver to quit
 };
 
 
