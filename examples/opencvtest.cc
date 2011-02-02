@@ -10,6 +10,7 @@ using namespace cv;
 struct MyWebcamReceiver: public WebcamListener {
 	std::string window;
 	FPSCounter counter;
+	CameraParameters cp;
 
 	// Test variables
 	float boardScaleFactor; // Chessboard square edge length in units you want to use
@@ -17,9 +18,13 @@ struct MyWebcamReceiver: public WebcamListener {
 	int board_h;
 	int numCorners;
 	Size board_size;
+	std::string loc;
+	std::string rot;
 
 	vector<Point3f> object_corners;
 	vector<Point2f> corners;
+
+	Mat rvec,tvec;
 	// End of test variables
 
 	MyWebcamReceiver(Webcam& webcam, std::string win)
@@ -28,6 +33,8 @@ struct MyWebcamReceiver: public WebcamListener {
 		for (int i = 0; i < numCorners; ++i) {
 			object_corners.push_back(Point3f(boardScaleFactor*(i / board_h), boardScaleFactor*(i % board_h), 0.0f));
 		}
+
+		cp = cp.fromFile("calibration.xml");
 	}
 
 	void frameEvent(const cv::Mat &frame) {
@@ -41,9 +48,21 @@ struct MyWebcamReceiver: public WebcamListener {
 		cvtColor(frame, edges, CV_BGR2GRAY);
 		GaussianBlur(edges, edges, Size(15,15), 1.5, 1.5);
 		Canny(edges, edges, 20, 60, 3);
-		putText(edges, boost::lexical_cast<std::string>(counter.getFPS()),
-			Point(0,30), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
+
 		*/
+
+		if (patternFound && (int)corners.size() == numCorners) {
+			solvePnP(Mat(object_corners), Mat(corners), cp.intrinsic_parameters,cp.distortion_coeffs,rvec,tvec,false);
+			loc = "x: " + boost::lexical_cast<std::string>((int)tvec.at<double>(0,0)) + ' '
+				  + "y: " + boost::lexical_cast<std::string>((int)tvec.at<double>(0,1)) + ' '
+				  + "z: " + boost::lexical_cast<std::string>((int)tvec.at<double>(0,2));
+			putText(img, loc,
+				Point(0,60), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
+
+		}
+
+		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
+			Point(0,30), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 
 		imshow(window, img);
 		counter();
