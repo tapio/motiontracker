@@ -11,7 +11,9 @@ macro(example_app EXENAME)
 	install(TARGETS ${EXENAME} DESTINATION bin)
 endmacro()
 
-example_app(opencvtest)
+example_app(edgefinder)
 example_app(calibrator)
+example_app(chessboardfinder)
+example_app(glchessboardtracker)
 example_app(tracker)
 

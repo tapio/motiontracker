@@ -43,14 +43,6 @@ struct MyWebcamReceiver: public WebcamListener {
 		Mat img = frame;
 		drawChessboardCorners(img, board_size, corners, patternFound);
 
-		/** Old stuff
-		Mat edges;
-		cvtColor(frame, edges, CV_BGR2GRAY);
-		GaussianBlur(edges, edges, Size(15,15), 1.5, 1.5);
-		Canny(edges, edges, 20, 60, 3);
-
-		*/
-
 		if (patternFound && (int)corners.size() == numCorners) {
 			solvePnP(Mat(object_corners), Mat(corners), cp.intrinsic_parameters,cp.distortion_coeffs,rvec,tvec,false);
 			loc = "x: " + boost::lexical_cast<std::string>((int)tvec.at<double>(0,0)) + ' '
