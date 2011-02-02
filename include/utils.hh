@@ -1,10 +1,6 @@
 #pragma once
 #include <deque>
 
-/**
- * Helpers.
- */
-
 // Some platform dependant code to get
 // needed resolution for timer.
 #ifndef _WIN32
@@ -20,8 +16,15 @@
 	typedef clock_t timetype;
 #endif
 
-/// Timer
+/**
+ * @brief Timer for recording the pass of time.
+ *
+ * Resolution depends on the platform, but it should be
+ * less than 1 milliseconds on Windows and POSIX systems.
+ */
 struct Timer {
+
+	/** Constructor initializes the timer. */
 	Timer(): m_duration(0.0) {
 		#ifdef _WIN32
 			QueryPerformanceCounter(&m_start_time);
@@ -32,6 +35,10 @@ struct Timer {
 		#endif
 	}
 
+	/**
+	 * Gets the current time interval and resets the clock.
+	 * @return seconds since last timer reset
+	 */
 	double interval() {
 		#ifdef _WIN32
 			LARGE_INTEGER stop_time;
@@ -57,15 +64,27 @@ private:
 	double m_duration;
 };
 
-/// FPS Counter
+/**
+ * @brief FPS Counter for calculating frame rate.
+ */
 struct FPSCounter {
+
+	/**
+	 * Constructs a new counter.
+	 * @param memLength hom many frames are taken into concideration when averaging the frame rate
+	 */
 	FPSCounter(int memLength = 5): m_memory(memLength), m_timer() { }
 
+	/** Signals the counter that a frame is completed. */
 	void operator()() {
 		m_memory.pop_back();
 		m_memory.push_front(m_timer.interval());
 	}
 
+	/**
+	 * Gets the frame rate.
+	 * @return frames per second
+	 */
 	double getFPS() const {
 		double sum = 0;
 		for (size_t i = 0; i < m_memory.size(); ++i)

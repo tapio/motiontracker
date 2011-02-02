@@ -13,12 +13,20 @@ namespace boost {
 	class thread;
 }
 
+/**
+ * @brief Class for storing camera parameters.
+ *
+ * It can also save/load them to/from an XML file.
+ */
 struct CameraParameters
 {
-	cv::Mat intrinsic_parameters; // Intrinsic parameters
-	cv::Mat distortion_coeffs; // Distortion coefficients
+	cv::Mat intrinsic_parameters; ///< Intrinsic parameters
+	cv::Mat distortion_coeffs; ///< Distortion coefficients
 
+	/// Dummy constructor
 	CameraParameters();
+
+	/// Constructor taking the parameters
 	CameraParameters(cv::Mat ip, cv::Mat dc);
 
 	/**
@@ -38,7 +46,7 @@ struct CameraParameters
 
 
 /**
- * This class opens a webcam and gets frames from it.
+ * @brief Opens a webcam and gets frames from it.
  */
 class Webcam: public boost::noncopyable
 {
@@ -94,7 +102,7 @@ private:
 
 
 /**
- * This abstract class receives frames from a webcam.
+ * @brief Abstract class for receiving frames asynchronously from a webcam.
  */
 struct WebcamListener: public boost::noncopyable
 {
@@ -126,8 +134,9 @@ private:
 
 
 /**
- * This class calculates object orientation and position from
- * a webcam video.
+ * @brief Calculates object orientation and position from webcam video.
+ *
+ * This is the heart of this library.
  */
 class MotionTracker: public WebcamListener
 {
@@ -163,7 +172,7 @@ private:
 
 
 /**
- * This abstract class receives motion events.
+ * @brief Abstract class for receiving motion events asynchronously.
  */
 struct MotionListener: public boost::noncopyable
 {
