@@ -149,6 +149,9 @@ public:
 	 */
 	MotionTracker(Webcam &webcam, const CameraParameters &camParams);
 
+	/** Virtual desctructor for derivatives. */
+	virtual ~MotionTracker() {}
+
 	/** Thread calls this, don't call directly. */
 	virtual void frameEvent(const cv::Mat& frame) { (void)frame; }
 
