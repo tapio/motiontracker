@@ -183,15 +183,13 @@ public:
 	 * Constructor.
 	 * @param webcam reference to a valid webcam for getting video
 	 * @param camParams camera parameters from calibration
-	 * @param win window title that is used for drawing the visualization
 	 */
-	ChessboardTracker(Webcam &webcam, const CameraParameters &camParams, const std::string& win);
+	ChessboardTracker(Webcam &webcam, const CameraParameters &camParams);
 
 	/** Thread calls this, don't call directly. */
 	void frameEvent(const cv::Mat& frame);
 
 private:
-	std::string m_window;
 	FPSCounter m_counter;
 	// Test variables
 	float m_boardScaleFactor; // Chessboard square edge length in units you want to use
