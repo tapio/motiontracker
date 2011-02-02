@@ -58,6 +58,17 @@ struct MyWebcamReceiver: public WebcamListener {
 				  + "z: " + boost::lexical_cast<std::string>((int)tvec.at<double>(0,2));
 			putText(img, loc,
 				Point(0,60), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
+			Mat rmat;
+			Rodrigues(rvec,rmat);
+			double roll, pitch, yaw;
+			roll = atan2(rmat.at<double>(1,0),rmat.at<double>(0,0));
+			pitch = -asin(rmat.at<double>(2,0));
+			yaw = atan2(rmat.at<double>(2,1),rmat.at<double>(2,2));
+			rot = "roll (z): " + boost::lexical_cast<std::string>((int)(roll*180/3.1415)) + ' '
+				  + "pitch (y): " + boost::lexical_cast<std::string>((int)(pitch*180/3.1415)) + ' '
+				  + "yaw (x): " + boost::lexical_cast<std::string>((int)(yaw*180/3.1415));
+			putText(img, rot,
+				Point(0,75), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
 		}
 
