@@ -167,11 +167,18 @@ public:
 	 */
 	cv::Vec3f getPosition() const;
 
+	/**
+	 * Get frame rate.
+	 * @return frames per second
+	 */
+	int getFPS() const;
+
 protected:
 	mutable boost::mutex m_mutex; ///< Mutex for synchronization
 	CameraParameters m_camParams; ///< Camera parameters
 	cv::Vec3f m_pos; ///< Position vector
 	cv::Vec3f m_rot; ///< Rotation vector
+	FPSCounter m_counter; ///< FPS counter
 };
 
 
@@ -193,7 +200,6 @@ public:
 	void frameEvent(const cv::Mat& frame);
 
 private:
-	FPSCounter m_counter;
 	// Test variables
 	float m_boardScaleFactor; // Chessboard square edge length in units you want to use
 	int m_boardH;
@@ -201,7 +207,6 @@ private:
 	cv::Size m_boardSize;
 	vector<cv::Point3f> m_objectCorners;
 	vector<cv::Point2f> m_corners;
-	cv::Mat m_rvec, m_tvec;
 };
 
 
