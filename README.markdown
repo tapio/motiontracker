@@ -13,17 +13,18 @@ It consists of the following parts:
 Dependencies
 ------------
 
-Required tools:
+Tools:
 
 * C++ compiler
-* _CMake_ (for generating Makefiles / project files)
-* Optional: _Git_ (for fetching the sources)
-* Optional: _Doxygen_ (for building documentation)
+* CMake (for generating Makefiles / project files)
+* _Optional:_ Git (for fetching the sources)
+* _Optional:_ Doxygen (for building documentation)
 
-Required libraries:
+Libraries:
 
 * OpenCV (>= 2.1.0 to work with CMake, >= 2.2.0 with Qt GUI enabled for examples)
 * Boost (headers and thread-component)
+* _Optional:_ OpenGL and GLUT for some example programs
 
 Compiling
 ---------
@@ -37,8 +38,10 @@ Compiling
 
 Example programs
 ----------------
-Currently there are three example programs:
+Currently there are five (unfinished) example programs:
 
-* __opencvtest__ - simple app for testing OpenCV's algorithms and MotionTracker's webcam interface
+* __edgefinder__ - simple app for testing OpenCV's algorithms and MotionTracker's webcam interface
 * __calibrator__ - a utility for determining webcam's intrinsic camera parameters
+* __chessboardfinder__ - finds a chessboard from webcam and displays the detection
+* __glchessboardtracker__ - finds a chessboard from webcam and rotates a cube according to that
 * __tracker__ - shows the motion tracker in action, requires calibration with _calibrator_
