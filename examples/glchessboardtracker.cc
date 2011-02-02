@@ -47,7 +47,9 @@ void initGL(int w, int h)
 void drawScene()
 {
 	// Yeah, this is horrible OpenGL 1 stuff,
-	// it suits the scope of this example.
+	// but it suits the scope of this example.
+
+	std::cout << "Tracker FPS: " << tracker->getFPS() << std::endl;
 
 	glClear(GL_COLOR_BUFFER_BIT);	// Clear The Screen And The Depth Buffer
 	glLoadIdentity();
@@ -55,12 +57,13 @@ void drawScene()
 	glLoadIdentity();
 
 	// Position
-	cv::Vec3f pos = tracker->getRotation();
-	float x = pos[0] * 1;
-	float y = pos[1] * 1;
-	float z = pos[2] * 1 - 7.0f;
-	//glTranslatef(x, y, z); // FIXME: Translate disabled
-	glTranslatef(0.0f, 0.0f, -7.0f);
+	cv::Vec3f pos = tracker->getPosition();
+	// FIXME: Arbitrary factors
+	float x = pos[0] * 0.005;
+	float y = pos[1] * 0.005;
+	float z = pos[2] * 0.0005 - 7.0f;
+	glTranslatef(x, y, z);
+	//glTranslatef(0.0f, 0.0f, -7.0f);
 	std::cout << "Raw pos: " << pos[0] << " " << pos[1] << " " << pos[2] << std::endl;
 
 	// Rotation
@@ -71,8 +74,8 @@ void drawScene()
 	float rx = rot[0] / sum;
 	float ry = rot[1] / sum;
 	float rz = rot[2] / sum;
-	glRotatef(magnitude * 6, rx, ry, rz); // FIXME: Arbitrary multiplier
-	std::cout << "Rot: " << magnitude << " " << rx << " " << ry << " " << rz << std::endl;
+	glRotatef(magnitude * 16, rx, ry, rz); // FIXME: Arbitrary multiplier
+	//std::cout << "Rot: " << magnitude << " " << rx << " " << ry << " " << rz << std::endl;
 
 	// Draw a cube
 	glBegin(GL_QUADS);
