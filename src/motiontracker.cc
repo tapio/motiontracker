@@ -36,12 +36,12 @@ void ChessboardTracker::frameEvent(const cv::Mat& frame) {
 	cv::Mat pos, rot;
 	if (patternFound && (int)m_corners.size() == m_numCorners) {
 		solvePnP(Mat(m_objectCorners), Mat(m_corners), m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, rot, pos, false);
+
+		// Assign new values
+		boost::mutex::scoped_lock l(m_mutex);
+		m_pos = cv::Vec3f(pos.at<double>(0,0), pos.at<double>(0,1), pos.at<double>(0,2));
+		m_rot = cv::Vec3f(rot.at<double>(0,0), rot.at<double>(0,1), rot.at<double>(0,2));
 	}
 
 	m_counter(); // Update FPS
-
-	// Assign new variables
-	boost::mutex::scoped_lock l(m_mutex);
-	m_pos = cv::Vec3f(pos.at<double>(0,0), pos.at<double>(0,1), pos.at<double>(0,2));
-	m_rot = cv::Vec3f(rot.at<double>(0,0), rot.at<double>(0,1), rot.at<double>(0,2));
 }
