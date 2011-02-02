@@ -29,20 +29,19 @@ ChessboardTracker::ChessboardTracker(Webcam &webcam, const CameraParameters &cam
 }
 
 void ChessboardTracker::frameEvent(const cv::Mat& frame) {
-	cv::Vec3f pos, rot;
-
+	// Find the chessboard
 	bool patternFound = findChessboardCorners(frame, m_boardSize, m_corners, CALIB_CB_FAST_CHECK);
-	Mat img = frame;
 
+	// Solve the pose
+	cv::Mat pos, rot;
 	if (patternFound && (int)m_corners.size() == m_numCorners) {
-		solvePnP(Mat(m_objectCorners), Mat(m_corners), m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, m_rvec, m_tvec, false);
+		solvePnP(Mat(m_objectCorners), Mat(m_corners), m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, rot, pos, false);
 	}
 
-	m_counter();
+	m_counter(); // Update FPS
 
 	// Assign new variables
-	// TODO
 	boost::mutex::scoped_lock l(m_mutex);
-	m_pos = pos;
-	m_rot = rot;
+	m_pos = cv::Vec3f(pos.at<double>(0,0), pos.at<double>(0,1), pos.at<double>(0,2));
+	m_rot = cv::Vec3f(rot.at<double>(0,0), rot.at<double>(0,1), rot.at<double>(0,2));
 }
