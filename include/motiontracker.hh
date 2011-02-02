@@ -4,6 +4,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/noncopyable.hpp>
+#include "utils.hh"
 
 // Forward declarations
 namespace cv {
@@ -134,9 +135,9 @@ private:
 
 
 /**
- * @brief Calculates object orientation and position from webcam video.
+ * @brief Abstract class for calculating object orientation and position from webcam video.
  *
- * This is the heart of this library.
+ * This is the base class for implementations that track certain kind of object.
  */
 class MotionTracker: public WebcamListener
 {
@@ -144,12 +145,12 @@ public:
 	/**
 	 * Constructor.
 	 * @param webcam reference to a valid webcam for getting video
-	 * @param camparams camera parameters from calibration
+	 * @param camParams camera parameters from calibration
 	 */
-	MotionTracker(Webcam &webcam, const CameraParameters &camparams);
+	MotionTracker(Webcam &webcam, const CameraParameters &camParams);
 
 	/** Thread calls this, don't call directly. */
-	void frameEvent(const cv::Mat& frame);
+	virtual void frameEvent(const cv::Mat& frame) { (void)frame; }
 
 	/**
 	 * Returns the current orientation of the tracked object.
@@ -163,10 +164,43 @@ public:
 	 */
 	cv::Vec3f getPosition() const;
 
+protected:
+	mutable boost::mutex m_mutex; ///< Mutex for synchronization
+	CameraParameters m_camParams; ///< Camera parameters
+	cv::Vec3f m_pos; ///< Position vector
+	cv::Vec3f m_rot; ///< Rotation vector
+};
+
+
+
+/**
+ * @brief Calculates chessboard orientation and position from webcam video.
+ */
+class ChessboardTracker: public MotionTracker
+{
+public:
+	/**
+	 * Constructor.
+	 * @param webcam reference to a valid webcam for getting video
+	 * @param camParams camera parameters from calibration
+	 * @param win window title that is used for drawing the visualization
+	 */
+	ChessboardTracker(Webcam &webcam, const CameraParameters &camParams, const std::string& win);
+
+	/** Thread calls this, don't call directly. */
+	void frameEvent(const cv::Mat& frame);
+
 private:
-	mutable boost::mutex m_mutex;
-	cv::Vec3f m_pos;
-	cv::Vec3f m_rot;
+	std::string m_window;
+	FPSCounter m_counter;
+	// Test variables
+	float m_boardScaleFactor; // Chessboard square edge length in units you want to use
+	int m_boardH;
+	int m_numCorners;
+	cv::Size m_boardSize;
+	vector<cv::Point3f> m_objectCorners;
+	vector<cv::Point2f> m_corners;
+	cv::Mat m_rvec, m_tvec;
 };
 
 
