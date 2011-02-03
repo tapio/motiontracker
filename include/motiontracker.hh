@@ -147,7 +147,7 @@ public:
 	 * @param webcam reference to a valid webcam for getting video
 	 * @param camParams camera parameters from calibration
 	 */
-	MotionTracker(Webcam &webcam, const CameraParameters &camParams);
+	MotionTracker(Webcam &webcam, const CameraParameters &camParams = CameraParameters());
 
 	/** Virtual desctructor for derivatives. */
 	virtual ~MotionTracker() {}
@@ -207,6 +207,28 @@ private:
 	cv::Size m_boardSize;
 	vector<cv::Point3f> m_objectCorners;
 	vector<cv::Point2f> m_corners;
+};
+
+
+
+/**
+ * @brief Calculates the position of a unique color blob from a webcam video.
+ */
+class ColorTracker: public MotionTracker
+{
+public:
+	/**
+	 * Constructor.
+	 * @param webcam reference to a valid webcam for getting video
+	 * @param hue the approximate hue value of the color to be tracked
+	 */
+	ColorTracker(Webcam &webcam, int hue);
+
+	/** Thread calls this, don't call directly. */
+	void frameEvent(const cv::Mat& frame);
+
+private:
+	int m_hue;
 };
 
 
