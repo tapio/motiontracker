@@ -17,4 +17,5 @@ example_app(calibrator)
 example_app(chessboardfinder)
 example_app(tracker)
 example_app(glchessboardtracker)
+example_app(gputest)
 
