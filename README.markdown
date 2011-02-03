@@ -44,4 +44,6 @@ Currently there are five (unfinished) example programs:
 * __calibrator__ - a utility for determining webcam's intrinsic camera parameters
 * __chessboardfinder__ - finds a chessboard from webcam and displays the detection
 * __glchessboardtracker__ - finds a chessboard from webcam and rotates a cube according to that
+* __gputest__ - simple video thresholding that can use GPU for calculations
+* __colortracker__ - tracks a colored blob
 * __tracker__ - shows the motion tracker in action, requires calibration with _calibrator_
