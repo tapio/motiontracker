@@ -48,3 +48,29 @@ void ChessboardTracker::frameEvent(const cv::Mat& frame) {
 		m_counter(); // Update FPS
 	}
 }
+
+
+
+
+ColorTracker::ColorTracker(Webcam &webcam, int hue)
+	: MotionTracker(webcam), m_hue(hue)
+{ }
+
+void ColorTracker::frameEvent(const cv::Mat& frame) {
+	const int dH = 20;
+
+	// Solve the position
+	cv::Mat imgHSV, thresh;
+	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
+	cv::inRange(imgHSV, cv::Scalar(m_hue - dH, 120, 120), cv::Scalar(m_hue + dH, 255, 255), thresh);
+
+	// Calculate the moments to estimate the position
+	cv::Moments m = cv::moments(thresh, true);
+	int x = m.m10 / m.m00;
+	int y = m.m01 / m.m00;
+
+	// Assign new values
+	boost::mutex::scoped_lock l(m_mutex);
+	m_pos = cv::Vec3f(x, y, 0);
+	m_counter(); // Update FPS
+}

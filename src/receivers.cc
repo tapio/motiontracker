@@ -18,11 +18,13 @@ void WebcamListener::operator()() {
 	cv::Mat frame;
 	while (!m_quit) {
 		// Check for new frame
-		if (m_webcam.getFrameIndex() > frameId) {
+		unsigned i = m_webcam.getFrameIndex();
+		if (i > frameId) {
 			m_webcam >> frame;
 			// Push it
 			if (!frame.empty())
 				frameEvent(frame);
+			frameId = i;
 		}
 	}
 }

@@ -7,30 +7,26 @@
 
 using namespace cv;
 
-struct MyWebcamReceiver: public WebcamListener {
+struct MyTracker: public WebcamListener, public MotionListener {
 	std::string window;
 	FPSCounter counter;
+	volatile int x;
+	volatile int y;
 
-	MyWebcamReceiver(Webcam& webcam, std::string win)
-		: WebcamListener(webcam), window(win), counter(5)
+	MyTracker(Webcam& cam, MotionTracker& tr, std::string win)
+		: WebcamListener(cam), MotionListener(tr), window(win), counter(5), x(), y()
 	{ }
 
-	void frameEvent(const Mat &frame) {
-		Mat img(frame), imgHSV, thresh;
-		cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to grayscale
-		//GaussianBlur(imgHSV, imgHSV, Size(15,15), 1.5, 1.5); // Blur to reduce noise
+	void motionEvent(cv::Vec3f pos, cv::Vec3f) {
+		x = pos[0];
+		y = pos[1];
+	}
 
-		// Here we have the HSV color limits. This is setup for dark blue. Good luck finding yours.
-		inRange(imgHSV, Scalar(80, 120, 120), Scalar(120, 255, 255), thresh);
-
-		// Calculate the moments to estimate the position
-		Moments m = moments(thresh, true);
-		int x = m.m10 / m.m00;
-		int y = m.m01 / m.m00;
-
+	void frameEvent(const cv::Mat& frame) {
+		Mat img(frame);
 		// Add FPS indicator
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
-			Point(x,y), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
+			Point(x, y), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 		// Show on screen
 		imshow(window, img);
 		counter(); // Update FPS counter
@@ -41,8 +37,10 @@ int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings
 	boost::scoped_ptr<Webcam> webcam;
+	boost::scoped_ptr<ColorTracker> tracker;
 	try {
 		webcam.reset(new Webcam);
+		tracker.reset(new ColorTracker(*webcam, 100)); // Track darkish blue
 	} catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
 		return 1;
@@ -53,7 +51,7 @@ int main(int argc, char** argv)
 
 	{
 		// Launch a receiver for doing the work whenever a frame is available
-		MyWebcamReceiver video(*webcam, window);
+		MyTracker mytracker(*webcam, *tracker, window);
 
 		// Rest here
 		while (waitKey(30) < 0);
