@@ -1,7 +1,6 @@
 #include <iostream>
 #include <boost/shared_ptr.hpp>
 #include <highgui.h>
-#include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "motiontracker.hh"
@@ -10,50 +9,27 @@
 namespace {
 	class MyWebcamListener;
 
-	static const int ESCAPE = 27; ///< Keycode for Escape
-	const char* camwindow = "webcam"; ///< OpenCV window id/title
-	int window; ///< GLUT window id
+	const char* window = "webcam"; ///< OpenCV window id/title
 	boost::shared_ptr<Webcam> webcam; ///< Webcam
 	boost::shared_ptr<MyWebcamListener> camlistener; ///< OpenCV webcam visualizer
 	boost::shared_ptr<ChessboardTracker> tracker; ///< The tracker
 
 	/// Minimal class for displaying webcam video.
-	// FIXME: Somehow window is not coming up
 	struct MyWebcamListener: public WebcamListener {
-		MyWebcamListener(Webcam& webcam): WebcamListener(webcam) { cv::namedWindow(camwindow); }
-		~MyWebcamListener() { cv::destroyWindow(camwindow); }
-		void frameEvent(const cv::Mat &frame) { /*cv::imshow(camwindow, frame);*/ }
+		MyWebcamListener(Webcam& webcam): WebcamListener(webcam) { }
+		void frameEvent(const cv::Mat &frame) { cv::imshow(window, frame); }
 	};
 }
 
-void resizeWindow(int w, int h)
-{
-	if (h == 0) h = 1; // Prevent div-by-zero
-	glViewport(0, 0, w, h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0f, (GLfloat)w/(GLfloat)h, 0.1f, 100.0f);
-	glMatrixMode(GL_MODELVIEW);
-}
-
-void initGL(int w, int h)
-{
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glEnable(GL_CULL_FACE);
-	glShadeModel(GL_SMOOTH);
-	resizeWindow(w, h);
-}
-
-void drawScene()
+void drawScene(void*)
 {
 	// Yeah, this is horrible OpenGL 1 stuff,
 	// but it suits the scope of this example.
 
 	std::cout << "Tracker FPS: " << tracker->getFPS() << std::endl;
 
-	glClear(GL_COLOR_BUFFER_BIT);	// Clear The Screen And The Depth Buffer
-	glLoadIdentity();
-
+	glEnable(GL_CULL_FACE);
+	glClear(GL_COLOR_BUFFER_BIT); // Clear The Screen And The Depth Buffer
 	glLoadIdentity();
 
 	// Position
@@ -74,7 +50,7 @@ void drawScene()
 	float rx = rot[0] / sum;
 	float ry = rot[1] / sum;
 	float rz = rot[2] / sum;
-	glRotatef(magnitude * 16, rx, ry, rz); // FIXME: Arbitrary multiplier
+	glRotatef(magnitude * 6, rx, ry, rz); // FIXME: Arbitrary multiplier
 	//std::cout << "Rot: " << magnitude << " " << rx << " " << ry << " " << rz << std::endl;
 
 	// Draw a cube
@@ -117,23 +93,11 @@ void drawScene()
 		glVertex3f( 1.0f,-1.0f,-1.0f);
 	glEnd();
 
-	glutSwapBuffers(); // Double buffering
-}
-
-void keyPressed(unsigned char key, int, int)
-{
-	// Quit on Escape
-	if (key == ESCAPE) {
-		glutDestroyWindow(window);
-		camlistener.reset();
-		tracker.reset();
-		webcam.reset();
-		exit(0); // Exit
-	}
 }
 
 int main(int argc, char **argv)
 {
+	(void)argc; (void)argv; // Suppress warnings
 	try {
 		webcam.reset(new Webcam);
 		tracker.reset(new ChessboardTracker(*webcam, CameraParameters::fromFile("calibration.xml")));
@@ -143,21 +107,19 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA);
-	glutInitWindowSize(640, 480);
-	glutInitWindowPosition(0, 0);
-	window = glutCreateWindow("Chessboard Tracker");
+	cv::namedWindow(window);
 
-	// Register functions
-	glutDisplayFunc(&drawScene);
-	glutIdleFunc(&drawScene);
-	glutReshapeFunc(&resizeWindow);
-	glutKeyboardFunc(&keyPressed);
+	// Register callback
+	cv::createOpenGLCallback(window, &drawScene);
 
-	initGL(640, 480);
+	// Rest here
+	while (cv::waitKey(30) < 0);
 
-	glutMainLoop();
+	// Clean-up
+	camlistener.reset();
+	tracker.reset();
+	webcam.reset();
+	cv::destroyWindow(window);
 
-	return 1;
+	return 0;
 }
