@@ -22,9 +22,9 @@ Tools:
 
 Libraries:
 
-* OpenCV (>= 2.1.0 to work with CMake, >= 2.2.0 with Qt GUI enabled for examples)
+* OpenCV (>= 2.2.0 (examples also require the Qt GUI with OpenGL support enabled))
 * Boost (headers and thread-component)
-* _Optional:_ OpenGL and GLUT for some example programs
+* _Optional:_ OpenGL for some example programs
 
 Compiling
 ---------
