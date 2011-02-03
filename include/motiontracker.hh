@@ -129,7 +129,7 @@ private:
 
 	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.
 	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
-	bool m_quit; /// Flag telling the receiver to quit
+	volatile bool m_quit; /// Flag telling the receiver to quit
 };
 
 
@@ -238,7 +238,7 @@ private:
 
 	MotionTracker &m_motionTracker; /// Reference to MotionTracker object used for polling motion events.
 	boost::scoped_ptr<boost::thread> m_thread;; /// Receiver thread
-	bool m_quit; /// Flag telling the receiver to quit
+	volatile bool m_quit; /// Flag telling the receiver to quit
 };
 
 
