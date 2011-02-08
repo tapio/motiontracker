@@ -74,3 +74,62 @@ void ColorTracker::frameEvent(const cv::Mat& frame) {
 	m_pos = cv::Vec3f(x, y, 0);
 	m_counter(); // Update FPS
 }
+
+
+
+
+ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
+	: MotionTracker(webcam), m_solver(solver)
+{
+	// TODO: Initialize m_objectPoints
+}
+
+void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
+	// Solve image points
+	m_imagePoints.clear();
+	cv::Mat imgHSV;
+	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
+	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
+	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
+	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
+	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
+
+	// Solve pose
+	if (m_solver == 1) solvePnP();
+	else if (m_solver == 2) solvePOSIT();
+	else throw std::runtime_error("Bad solver type in ColorCrossTracker");
+
+	m_counter(); // Update FPS
+}
+
+void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
+	const int dH = 20; // How much hue can vary to be accepted
+
+	// Threshold
+	cv::Mat thresh;
+	cv::inRange(frame, cv::Scalar(hue - dH, 120, 120), cv::Scalar(hue + dH, 255, 255), thresh);
+
+	// Calculate the moments to estimate the position
+	cv::Moments m = cv::moments(thresh, true);
+	int x = m.m10 / m.m00;
+	int y = m.m01 / m.m00;
+
+	// Save point
+	m_imagePoints.push_back(cv::Point2f(x,y));
+}
+
+void ColorCrossTracker::solvePnP() {
+	// TODO
+
+	// Assign new values
+	boost::mutex::scoped_lock l(m_mutex);
+	//m_pos = cv::Vec3f(x, y, 0);
+}
+
+void ColorCrossTracker::solvePOSIT() {
+	// TODO
+
+	// Assign new values
+	boost::mutex::scoped_lock l(m_mutex);
+	//m_pos = cv::Vec3f(x, y, 0);
+}
