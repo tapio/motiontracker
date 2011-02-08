@@ -234,6 +234,37 @@ private:
 
 
 /**
+ * @brief Calculates the position and orientation of a cross with colored tips.
+ */
+class ColorCrossTracker: public MotionTracker
+{
+public:
+	/**
+	 * Constructor.
+	 * @param webcam reference to a valid webcam for getting video
+	 * @param solver the method used: 1 = solvePnP, 2 = POSIT
+	 */
+	ColorCrossTracker(Webcam &webcam, int solver = 1);
+
+	/** Thread calls this, don't call directly. */
+	void frameEvent(const cv::Mat& frame);
+
+private:
+	/// Calculates an image point for given hue, common to all solvers.
+	void calculateImagePoint(const cv::Mat& frame, int hue);
+	/// Solve pose using solvePnP algorithm.
+	void solvePnP();
+	/// Solve pose using POSIT algorithm.
+	void solvePOSIT();
+
+	int m_solver;
+	vector<cv::Point3f> m_objectPoints;
+	vector<cv::Point2f> m_imagePoints;
+};
+
+
+
+/**
  * @brief Abstract class for receiving motion events asynchronously.
  */
 struct MotionListener: public boost::noncopyable
