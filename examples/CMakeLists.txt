@@ -19,4 +19,5 @@ example_app(tracker)
 example_app(glchessboardtracker)
 example_app(gputest)
 example_app(colortracker)
+example_app(colorcross)
 
