@@ -81,7 +81,15 @@ void ColorTracker::frameEvent(const cv::Mat& frame) {
 ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 	: MotionTracker(webcam), m_solver(solver)
 {
-	// TODO: Initialize m_objectPoints
+	m_objectPoints.push_back(cv::Point3f(0,100,0)); // Blue
+	m_objectPoints.push_back(cv::Point3f(0,-100,0)); // Red
+	m_objectPoints.push_back(cv::Point3f(-100,0,0)); // Yellow
+	m_objectPoints.push_back(cv::Point3f(100,0,0));	// Green
+}
+
+vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {
+	boost::mutex::scoped_lock l(m_mutex);
+	return m_savedImagePoints;
 }
 
 void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
@@ -89,10 +97,11 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 	m_imagePoints.clear();
 	cv::Mat imgHSV;
 	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
-	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
-	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
-	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
-	calculateImagePoint(imgHSV, 0); // FIXME: Assign proper hue
+
+	calculateImagePoint(imgHSV, 100); // Blue
+	calculateImagePoint(imgHSV, 170); // Red
+	calculateImagePoint(imgHSV, 25); // Yellow
+	calculateImagePoint(imgHSV, 50); // Green
 
 	// Solve pose
 	if (m_solver == 1) solvePnP();
@@ -103,7 +112,7 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 }
 
 void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
-	const int dH = 20; // How much hue can vary to be accepted
+	const int dH = 10; // How much hue can vary to be accepted
 
 	// Threshold
 	cv::Mat thresh;
@@ -123,13 +132,22 @@ void ColorCrossTracker::solvePnP() {
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);
-	//m_pos = cv::Vec3f(x, y, 0);
+//	m_pos = cv::Vec3f(x, y, 0);
 }
 
 void ColorCrossTracker::solvePOSIT() {
+	int x = 0, y = 0;
+	for (int i = 0; i < 4; ++i) {
+		x += m_imagePoints[i].x;
+		y += m_imagePoints[i].y;
+	}
+	x /= 4;
+	y /= 4;
+
 	// TODO
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);
-	//m_pos = cv::Vec3f(x, y, 0);
+	m_pos = cv::Vec3f(x, y, 0);
+	m_savedImagePoints = m_imagePoints;
 }

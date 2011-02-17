@@ -249,6 +249,8 @@ public:
 	/** Thread calls this, don't call directly. */
 	void frameEvent(const cv::Mat& frame);
 
+	vector<cv::Point2f> getImagePoints() const;
+
 private:
 	/// Calculates an image point for given hue, common to all solvers.
 	void calculateImagePoint(const cv::Mat& frame, int hue);
@@ -260,6 +262,7 @@ private:
 	int m_solver;
 	vector<cv::Point3f> m_objectPoints;
 	vector<cv::Point2f> m_imagePoints;
+	vector<cv::Point2f> m_savedImagePoints;
 };
 
 
@@ -279,6 +282,9 @@ struct MotionListener: public boost::noncopyable
 
 	/** Thread runs here, don't call directly. */
 	void operator()();
+
+	/** Get reference to the tracker object. */
+	MotionTracker& getTracker() { return m_motionTracker; }
 
 	/**
 	 * This function is called every time new motion happens.
