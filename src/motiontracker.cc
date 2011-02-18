@@ -164,11 +164,6 @@ void ColorCrossTracker::solvePOSIT() {
 	CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 1.0e-4f);
 	cvPOSIT( positObject, &srcImagePoints[0], 1000, criteria, rotation_matrix, translation_vector );
 
-	// Assign new values
-	boost::mutex::scoped_lock l(m_mutex);
-	// m_pos = cv::Vec3f(x, y, 0); OLD
-	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
-
 	// This can probably be done much more compactly
 	cv::Mat rotm(3,3, CV_32FC1);
 
@@ -185,8 +180,12 @@ void ColorCrossTracker::solvePOSIT() {
 	rotm.ptr<float>(1)[2] = rotation_matrix[8];
 
 	cv::Mat rot;
-	cv::Rodrigues(rotm,rot);
+	cv::Rodrigues(rotm, rot);
 
+	// Assign new values
+	boost::mutex::scoped_lock l(m_mutex);
+	// m_pos = cv::Vec3f(x, y, 0); OLD
+	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
 	m_rot = rot;
 	m_savedImagePoints = m_imagePoints;
 
