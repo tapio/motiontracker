@@ -159,8 +159,8 @@ void ColorCrossTracker::solvePOSIT() {
 	y /= 4;
 
 
-	CvMatr32f rotation_matrix = new float[9];
-	CvVect32f translation_vector = new float[3];
+	float rotation_matrix[9];
+	float translation_vector[3];
 	CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 1.0e-4f);
 	cvPOSIT( positObject, &srcImagePoints[0], 1000, criteria, rotation_matrix, translation_vector );
 
@@ -188,7 +188,4 @@ void ColorCrossTracker::solvePOSIT() {
 	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
 	m_rot = rot;
 	m_savedImagePoints = m_imagePoints;
-
-	delete rotation_matrix;
-	delete translation_vector;
 }
