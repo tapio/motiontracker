@@ -263,6 +263,12 @@ private:
 	vector<cv::Point3f> m_objectPoints;
 	vector<cv::Point2f> m_imagePoints;
 	vector<cv::Point2f> m_savedImagePoints;
+
+	// Posit stuff
+	CvPOSITObject* positObject;
+	std::vector<CvPoint3D32f> modelPoints;
+	std::vector<CvPoint2D32f> srcImagePoints;
+
 };
 
 

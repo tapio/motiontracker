@@ -30,12 +30,30 @@ struct MyTracker: public WebcamListener, public MotionListener {
 		vector<Point2f> imagePoints;
 		imagePoints = ctr->getImagePoints();
 
+		// Draw circles to detected tips
 		for (size_t i = 0; i < imagePoints.size(); ++i) {
 			circle(img,imagePoints[i],3,Scalar(255,0,255),3);
-		}
+		}		
+
 		// Add FPS indicator
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
 			Point(0, 475), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
+
+		std::string loc, rotv;
+		loc = "Position vector: x: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[0]) + ' '
+			  + "y: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[1]) + ' '
+			  + "z: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[2]);
+		putText(img, loc,
+			Point(0,455), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
+
+		rotv = "Rotation vector: x: " + boost::lexical_cast<std::string>((int)ctr->getRotation()[0]) + ' '
+			  + "y: " + boost::lexical_cast<std::string>((int)ctr->getRotation()[1]) + ' '
+			  + "z: " + boost::lexical_cast<std::string>((int)ctr->getRotation()[2]) + ' '
+			  + "mag: " + boost::lexical_cast<std::string>((int)(norm(ctr->getRotation())*180/3.1415));
+		putText(img, rotv,
+			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
+
+
 		// Show on screen
 		imshow(window, img);
 		counter(); // Update FPS counter

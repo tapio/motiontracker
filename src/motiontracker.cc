@@ -81,10 +81,17 @@ void ColorTracker::frameEvent(const cv::Mat& frame) {
 ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 	: MotionTracker(webcam), m_solver(solver)
 {
-	m_objectPoints.push_back(cv::Point3f(0,100,0)); // Blue
-	m_objectPoints.push_back(cv::Point3f(0,-100,0)); // Red
-	m_objectPoints.push_back(cv::Point3f(-100,0,0)); // Yellow
-	m_objectPoints.push_back(cv::Point3f(100,0,0));	// Green
+	m_objectPoints.push_back(cv::Point3f(0,0,0));	// Green ("Origin")
+	m_objectPoints.push_back(cv::Point3f(0,100,0)); // Red
+	m_objectPoints.push_back(cv::Point3f(100,0,0)); // Blue
+	m_objectPoints.push_back(cv::Point3f(0,0,100));	// Yellow
+
+	modelPoints.push_back(cvPoint3D32f(0.0f, 0.0f, 0.0f));
+	modelPoints.push_back(cvPoint3D32f(0.0f, 100.0f, 0.0f));
+	modelPoints.push_back(cvPoint3D32f(100.0f, 0.0f, 0.0f));
+	modelPoints.push_back(cvPoint3D32f(0.0f, 0.0, 100.0f));
+
+	positObject = cvCreatePOSITObject(&modelPoints[0], (int)modelPoints.size() );
 }
 
 vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {
@@ -95,13 +102,17 @@ vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {
 void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 	// Solve image points
 	m_imagePoints.clear();
+	srcImagePoints.clear();
+
 	cv::Mat imgHSV;
 	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
 
-	calculateImagePoint(imgHSV, 100); // Blue
-	calculateImagePoint(imgHSV, 170); // Red
-	calculateImagePoint(imgHSV, 25); // Yellow
-	calculateImagePoint(imgHSV, 50); // Green
+	// Image points must be added in the same order as model points
+	calculateImagePoint(imgHSV, 50);	// Green
+	calculateImagePoint(imgHSV, 170);	// Red
+	calculateImagePoint(imgHSV, 100);	// Blue
+	calculateImagePoint(imgHSV, 25);	// Yellow
+
 
 	// Solve pose
 	if (m_solver == 1) solvePnP();
@@ -125,6 +136,8 @@ void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
 
 	// Save point
 	m_imagePoints.push_back(cv::Point2f(x,y));
+
+	srcImagePoints.push_back( cvPoint2D32f( x, y) );
 }
 
 void ColorCrossTracker::solvePnP() {
@@ -136,6 +149,7 @@ void ColorCrossTracker::solvePnP() {
 }
 
 void ColorCrossTracker::solvePOSIT() {
+
 	int x = 0, y = 0;
 	for (int i = 0; i < 4; ++i) {
 		x += m_imagePoints[i].x;
@@ -144,10 +158,38 @@ void ColorCrossTracker::solvePOSIT() {
 	x /= 4;
 	y /= 4;
 
-	// TODO
+
+	CvMatr32f rotation_matrix = new float[9];
+	CvVect32f translation_vector = new float[3];
+	CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 1.0e-4f);
+	cvPOSIT( positObject, &srcImagePoints[0], 1000, criteria, rotation_matrix, translation_vector );
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);
-	m_pos = cv::Vec3f(x, y, 0);
+	// m_pos = cv::Vec3f(x, y, 0); OLD
+	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
+
+	// This can probably be done much more compactly
+	cv::Mat rotm(3,3, CV_32FC1);
+
+	rotm.ptr<float>(0)[0] = rotation_matrix[0];
+	rotm.ptr<float>(0)[1] = rotation_matrix[1];
+	rotm.ptr<float>(0)[2] = rotation_matrix[2];
+
+	rotm.ptr<float>(1)[0] = rotation_matrix[3];
+	rotm.ptr<float>(1)[1] = rotation_matrix[4];
+	rotm.ptr<float>(1)[2] = rotation_matrix[5];
+
+	rotm.ptr<float>(1)[0] = rotation_matrix[6];
+	rotm.ptr<float>(1)[1] = rotation_matrix[7];
+	rotm.ptr<float>(1)[2] = rotation_matrix[8];
+
+	cv::Mat rot;
+	cv::Rodrigues(rotm,rot);
+
+	m_rot = rot;
 	m_savedImagePoints = m_imagePoints;
+
+	delete rotation_matrix;
+	delete translation_vector;
 }
