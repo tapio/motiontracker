@@ -27,8 +27,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 
 	void frameEvent(const cv::Mat& frame) {
 		Mat img(frame);
-		vector<Point2f> imagePoints;
-		imagePoints = ctr->getImagePoints();
+		std::vector<Point2f> imagePoints = ctr->getImagePoints();
 
 		// Draw circles to detected tips
 		for (size_t i = 0; i < imagePoints.size(); ++i) {
@@ -36,7 +35,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 		}
 
 		// Draw reprojected points
-		vector<Point2d> projectedPoints = ctr->getProjectedPoints();
+		std::vector<Point2f> projectedPoints = ctr->getProjectedPoints();
 
 		for (size_t i = 0; i < projectedPoints.size(); ++i) {
 			if (i > 0)
@@ -44,9 +43,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 			circle(img,projectedPoints[i],3,Scalar(0,255,255),3);
 		}
 
-
-
-		// Add FPS indicator
+		// Print FPS indicator and position + rotation vector components
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
 			Point(0, 475), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 
@@ -63,8 +60,6 @@ struct MyTracker: public WebcamListener, public MotionListener {
 			  + "mag: " + boost::lexical_cast<std::string>((int)(norm(ctr->getRotation())*180/3.1415));
 		putText(img, rotv,
 			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
-
-
 
 		// Show on screen
 		imshow(window, img);
@@ -99,11 +94,4 @@ int main(int argc, char** argv)
 
 	cvDestroyWindow(window.c_str());
 	return 0;
-
-	/**MotionTracker tracker(*webcam, camparams);
-
-	// TODO
-	(void)tracker;
-
-	return 0;*/
 }

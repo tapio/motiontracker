@@ -249,8 +249,11 @@ public:
 	/** Thread calls this, don't call directly. */
 	void frameEvent(const cv::Mat& frame);
 
-	vector<cv::Point2f> getImagePoints() const;
-	vector<cv::Point2d> getProjectedPoints() const;
+	/** Getter for image points vector. */
+	std::vector<cv::Point2f> getImagePoints() const;
+
+	/** Getter for projected points vector */
+	std::vector<cv::Point2f> getProjectedPoints() const;
 
 private:
 	/// Calculates an image point for given hue, common to all solvers.
@@ -261,16 +264,18 @@ private:
 	void solvePOSIT();
 
 	int m_solver;
-	vector<cv::Point3f> m_objectPoints;
-	vector<cv::Point2f> m_imagePoints;
-	vector<cv::Point2f> m_savedImagePoints;
+	std::vector<cv::Point3f> m_objectPoints;
+	std::vector<cv::Point2f> m_imagePoints;
+	std::vector<cv::Point2f> m_savedImagePoints;
 
 	// Posit stuff
-	CvPOSITObject* positObject;
-	std::vector<CvPoint2D32f> srcImagePoints;
-	std::vector<cv::Point2d> projectedPoints;
-	std::vector<cv::Point2d> savedProjectedPoints;
-	std::vector<CvPoint3D32f> modelPoints;
+	CvPOSITObject* m_positObject;
+	std::vector<CvPoint2D32f> m_srcImagePoints;
+	std::vector<CvPoint3D32f> m_modelPoints;
+
+	std::vector<cv::Point2f> m_projectedPoints;
+	std::vector<cv::Point2f> m_savedProjectedPoints;
+
 
 
 };
