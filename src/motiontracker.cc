@@ -157,7 +157,7 @@ void ColorCrossTracker::solvePnP() {
 void ColorCrossTracker::solvePOSIT() {
 
 	int x = 0, y = 0;
-	int FOCAL_LENGTH = 1000;
+	const int FOCAL_LENGTH = 1000;
 	for (int i = 0; i < 4; ++i) {
 		x += m_imagePoints[i].x;
 		y += m_imagePoints[i].y;
@@ -189,13 +189,6 @@ void ColorCrossTracker::solvePOSIT() {
 	cv::Mat rot;
 	cv::Rodrigues(rotm, rot);
 
-	// Assign new values
-	boost::mutex::scoped_lock l(m_mutex);
-	// m_pos = cv::Vec3f(x, y, 0); OLD
-	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
-	m_rot = rot;
-	m_savedImagePoints = m_imagePoints;
-
 	for ( size_t  p=0; p<m_modelPoints.size(); p++ )
 	{
 		cv::Point3f point3D;
@@ -219,5 +212,12 @@ void ColorCrossTracker::solvePOSIT() {
 		}
 		m_projectedPoints.push_back( point2D );
 	}
+
+	// Assign new values
+	boost::mutex::scoped_lock l(m_mutex);
+	// m_pos = cv::Vec3f(x, y, 0); OLD
+	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
+	m_rot = rot;
+	m_savedImagePoints = m_imagePoints;
 	m_savedProjectedPoints = m_projectedPoints;
 }
