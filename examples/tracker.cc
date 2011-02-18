@@ -33,7 +33,18 @@ struct MyTracker: public WebcamListener, public MotionListener {
 		// Draw circles to detected tips
 		for (size_t i = 0; i < imagePoints.size(); ++i) {
 			circle(img,imagePoints[i],3,Scalar(255,0,255),3);
-		}		
+		}
+
+		// Draw reprojected points
+		vector<Point2d> projectedPoints = ctr->getProjectedPoints();
+
+		for (size_t i = 0; i < projectedPoints.size(); ++i) {
+			if (i > 0)
+				line(img, projectedPoints[0], projectedPoints[i], CV_RGB(255, 255, 255),2);
+			circle(img,projectedPoints[i],3,Scalar(0,255,255),3);
+		}
+
+
 
 		// Add FPS indicator
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
@@ -52,6 +63,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 			  + "mag: " + boost::lexical_cast<std::string>((int)(norm(ctr->getRotation())*180/3.1415));
 		putText(img, rotv,
 			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
+
 
 
 		// Show on screen

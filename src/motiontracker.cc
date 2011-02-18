@@ -99,10 +99,16 @@ vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {
 	return m_savedImagePoints;
 }
 
+vector<cv::Point2d> ColorCrossTracker::getProjectedPoints() const {
+	boost::mutex::scoped_lock l(m_mutex);
+	return savedProjectedPoints;
+}
+
 void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 	// Solve image points
 	m_imagePoints.clear();
 	srcImagePoints.clear();
+	projectedPoints.clear();
 
 	cv::Mat imgHSV;
 	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
@@ -151,6 +157,7 @@ void ColorCrossTracker::solvePnP() {
 void ColorCrossTracker::solvePOSIT() {
 
 	int x = 0, y = 0;
+	int FOCAL_LENGTH = 1000;
 	for (int i = 0; i < 4; ++i) {
 		x += m_imagePoints[i].x;
 		y += m_imagePoints[i].y;
@@ -162,7 +169,7 @@ void ColorCrossTracker::solvePOSIT() {
 	float rotation_matrix[9];
 	float translation_vector[3];
 	CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 1.0e-4f);
-	cvPOSIT( positObject, &srcImagePoints[0], 1000, criteria, rotation_matrix, translation_vector );
+	cvPOSIT( positObject, &srcImagePoints[0], FOCAL_LENGTH, criteria, rotation_matrix, translation_vector );
 
 	// This can probably be done much more compactly
 	cv::Mat rotm(3,3, CV_32FC1);
@@ -188,4 +195,29 @@ void ColorCrossTracker::solvePOSIT() {
 	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
 	m_rot = rot;
 	m_savedImagePoints = m_imagePoints;
+
+	for ( size_t  p=0; p<modelPoints.size(); p++ )
+	{
+		cv::Point3d point3D;
+		point3D.x = rotation_matrix[0] * modelPoints[p].x +
+			rotation_matrix[1] * modelPoints[p].y +
+			rotation_matrix[2] * modelPoints[p].z +
+			translation_vector[0];
+		point3D.y = rotation_matrix[3] * modelPoints[p].x +
+			rotation_matrix[4] * modelPoints[p].y +
+			rotation_matrix[5] * modelPoints[p].z +
+			translation_vector[1];
+		point3D.z = rotation_matrix[6] * modelPoints[p].x +
+			rotation_matrix[7] * modelPoints[p].y +
+			rotation_matrix[8] * modelPoints[p].z +
+			translation_vector[2];
+		cv::Point2d point2D( 0.0, 0.0 );
+		if ( point3D.z != 0 )
+		{
+			point2D.x = FOCAL_LENGTH * point3D.x / point3D.z;
+			point2D.y = FOCAL_LENGTH * point3D.y / point3D.z;
+		}
+		projectedPoints.push_back( point2D );
+	}
+	savedProjectedPoints = projectedPoints;
 }

@@ -250,6 +250,7 @@ public:
 	void frameEvent(const cv::Mat& frame);
 
 	vector<cv::Point2f> getImagePoints() const;
+	vector<cv::Point2d> getProjectedPoints() const;
 
 private:
 	/// Calculates an image point for given hue, common to all solvers.
@@ -266,8 +267,11 @@ private:
 
 	// Posit stuff
 	CvPOSITObject* positObject;
-	std::vector<CvPoint3D32f> modelPoints;
 	std::vector<CvPoint2D32f> srcImagePoints;
+	std::vector<cv::Point2d> projectedPoints;
+	std::vector<cv::Point2d> savedProjectedPoints;
+	std::vector<CvPoint3D32f> modelPoints;
+
 
 };
 
