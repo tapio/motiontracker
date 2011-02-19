@@ -156,15 +156,7 @@ void ColorCrossTracker::solvePnP() {
 
 void ColorCrossTracker::solvePOSIT() {
 
-	int x = 0, y = 0;
 	const int FOCAL_LENGTH = 1000;
-	for (int i = 0; i < 4; ++i) {
-		x += m_imagePoints[i].x;
-		y += m_imagePoints[i].y;
-	}
-	x /= 4;
-	y /= 4;
-
 
 	float rotation_matrix[9];
 	float translation_vector[3];
