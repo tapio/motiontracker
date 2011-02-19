@@ -92,6 +92,12 @@ ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 	m_modelPoints.push_back(cvPoint3D32f(0.0f, 0.0f, 100.0f));
 
 	m_positObject = cvCreatePOSITObject(&m_modelPoints[0], (int)m_modelPoints.size() );
+
+	try {
+		m_camParams = m_camParams.fromFile("calibration.xml");
+	} catch (std::exception &e) {
+		std::cout << "ERROR: " << e.what() << std::endl;
+	}
 }
 
 std::vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {
@@ -147,11 +153,23 @@ void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
 }
 
 void ColorCrossTracker::solvePnP() {
-	// TODO
+	cv::Mat rvec, tvec;
+
+	// Calculate translation and rotation vectors
+	cv::solvePnP(cv::Mat(m_objectPoints), cv::Mat(m_imagePoints), m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs,rvec,tvec,false);
+
+	// Project model points to image plane using calculated translation and rotation vectors
+	cv::projectPoints(cv::Mat(m_objectPoints),rvec,tvec,m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, m_projectedPoints);
+
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);
-//	m_pos = cv::Vec3f(x, y, 0);
+	m_pos = tvec;
+	m_rot = rvec;
+	m_savedImagePoints = m_imagePoints;
+	m_savedProjectedPoints = m_projectedPoints;
+
+
 }
 
 void ColorCrossTracker::solvePOSIT() {
@@ -207,7 +225,6 @@ void ColorCrossTracker::solvePOSIT() {
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);
-	// m_pos = cv::Vec3f(x, y, 0); OLD
 	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
 	m_rot = rot;
 	m_savedImagePoints = m_imagePoints;

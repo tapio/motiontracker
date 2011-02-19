@@ -268,6 +268,9 @@ private:
 	std::vector<cv::Point2f> m_imagePoints;
 	std::vector<cv::Point2f> m_savedImagePoints;
 
+	// PnP stuff
+	CameraParameters m_camParams;
+
 	// Posit stuff
 	CvPOSITObject* m_positObject;
 	std::vector<CvPoint2D32f> m_srcImagePoints;
@@ -275,8 +278,6 @@ private:
 
 	std::vector<cv::Point2f> m_projectedPoints;
 	std::vector<cv::Point2f> m_savedProjectedPoints;
-
-
 
 };
 
