@@ -12,7 +12,7 @@ namespace {
 	const char* window = "webcam"; ///< OpenCV window id/title
 	boost::shared_ptr<Webcam> webcam; ///< Webcam
 	boost::shared_ptr<MyWebcamListener> camlistener; ///< OpenCV webcam visualizer
-	boost::shared_ptr<ChessboardTracker> tracker; ///< The tracker
+	boost::shared_ptr<ColorCrossTracker> tracker; ///< The tracker
 
 	/// Minimal class for displaying webcam video.
 	struct MyWebcamListener: public WebcamListener {
@@ -47,9 +47,9 @@ void drawScene(void*)
 	cv::Vec3f rot = tracker->getRotation();
 	float magnitude = cv::norm(rot);
 	float sum = rot[0] + rot[1] + rot[2];
-	float rx = rot[0] / sum;
-	float ry = rot[1] / sum;
-	float rz = rot[2] / sum;
+	float rx = 0; //rot[0] / sum;
+	float ry = 0; //rot[1] / sum;
+	float rz = 0; //rot[2] / sum;
 	glRotatef(magnitude * 6, rx, ry, rz); // FIXME: Arbitrary multiplier
 	//std::cout << "Rot: " << magnitude << " " << rx << " " << ry << " " << rz << std::endl;
 
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 	(void)argc; (void)argv; // Suppress warnings
 	try {
 		webcam.reset(new Webcam);
-		tracker.reset(new ChessboardTracker(*webcam, CameraParameters::fromFile("calibration.xml")));
+		tracker.reset(new ColorCrossTracker(*webcam, 2));
 		camlistener.reset(new MyWebcamListener(*webcam));
 	} catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
