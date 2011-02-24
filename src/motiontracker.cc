@@ -120,7 +120,7 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
 
 	// Image points must be added in the same order as model points
-	calculateImagePoint(imgHSV, 50);	// Green
+	calculateImagePoint(imgHSV, 60);	// Green
 	calculateImagePoint(imgHSV, 170);	// Red
 	calculateImagePoint(imgHSV, 100);	// Blue
 	calculateImagePoint(imgHSV, 25);	// Yellow
@@ -135,7 +135,7 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 }
 
 void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
-	const int dH = 10; // How much hue can vary to be accepted
+	const int dH = 15; // How much hue can vary to be accepted
 
 	// Threshold
 	cv::Mat thresh;

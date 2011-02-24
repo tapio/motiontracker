@@ -45,7 +45,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 
 		// Print FPS indicator and position + rotation vector components
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
-			Point(0, 475), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
+			Point(0, 475), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
 		std::string loc, rotv;
 		loc = "Position vector: x: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[0]) + ' '
@@ -62,6 +62,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
 		// Show on screen
+		//cvtColor(img, img, CV_BGR2HSV); // Switch to HSV color space
 		imshow(window, img);
 		counter(); // Update FPS counter
 	}
