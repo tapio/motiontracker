@@ -11,12 +11,15 @@ class ColorCrossTracker;
  */
 struct PyMotionTracker
 {
+	/// Constructor
 	PyMotionTracker(/*TODO: params*/);
 	
+	/// Returns position
 	boost::python::tuple getPosition() const;
 	
+	/// Returns rotation
 	boost::python::tuple getRotation() const;
 
-	Webcam* webcam;
-	ColorCrossTracker* tracker;
+	Webcam* webcam; ///< Webcam object
+	ColorCrossTracker* tracker; ///< Tracker object
 };

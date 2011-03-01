@@ -43,9 +43,9 @@ bpy::tuple PyMotionTracker::getRotation() const
 /// Dummy test class
 struct DummyData
 {
-	void set(std::string data) { m_data = data; }
-	std::string get() const { return m_data; }
-	std::string m_data;
+	void set(std::string data) { m_data = data; } ///< Set data
+	std::string get() const { return m_data; } ///< Get data
+	std::string m_data; ///< Data
 };
 
 /// Hello world test function
