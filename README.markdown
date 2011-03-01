@@ -7,7 +7,7 @@ It consists of the following parts:
 
 * Library component with C++ API
 * Example programs (also C++)
-* Blender plugin (not yet started)
+* Blender plugin with minimal Python API
 * Documentation
 
 Dependencies
@@ -23,7 +23,8 @@ Tools:
 Libraries:
 
 * OpenCV (>= 2.2.0 (examples also require the Qt GUI with OpenGL support enabled))
-* Boost (headers and thread-component)
+* Boost (headers and thread-component, optionally python-component for Blender-plugin)
+* _Optional:_ Python libraries for the Blender-plugin's Python module
 * _Optional:_ OpenGL for some example programs
 
 Compiling
@@ -35,6 +36,15 @@ Compiling
     $ cmake ..
     $ make
     $ ./tracker
+
+By giving cmake-command a parameter in the form of -DBUILD\_XXX=OFF you can disable some parts of the project. Possible values for BUILD\_XXX are:
+
+* BUILD_APIDOC
+* BUILD_EXAMPLES
+* BUILD_PLUGIN
+* BUILD\_SHARED\_LIBS (defaults to OFF, enable with ON)
+
+<!-- (Note to people who read the plain text version instead of formatted: backslash-underscore means just underscore.) -->
 
 Example programs
 ----------------
