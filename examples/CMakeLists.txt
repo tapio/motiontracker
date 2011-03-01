@@ -1,6 +1,3 @@
-
-list(APPEND LIBS MotionTracker)
-
 # Common sources
 include_directories("${INCDIR}")
 file(GLOB HEADERS ${INCDIR}/*.hh)

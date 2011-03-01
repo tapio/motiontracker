@@ -24,7 +24,7 @@ endif()
 # Set default compile flags for GCC
 if(CMAKE_COMPILER_IS_GNUCXX)
 	message(STATUS "GCC detected, adding compile flags")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-missing-field-initializers")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall -Wextra -Wno-missing-field-initializers")
 	# -pthread is unrecognized on Windows and ansi standard causes errors
 	if(NOT WIN32)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++98 -pthread")
@@ -90,6 +90,9 @@ set(INCDIR "${CMAKE_SOURCE_DIR}/include")
 
 add_subdirectory(include)
 add_subdirectory(src)
+
+list(APPEND LIBS MotionTracker)
+
 if(BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif(BUILD_EXAMPLES)
