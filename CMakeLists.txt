@@ -4,6 +4,7 @@ cmake_policy(VERSION 2.6)
 set(PROJECT_VERSION "alpha")
 
 option(BUILD_EXAMPLES "Build the example program(s)." ON)
+option(BUILD_PLUGIN "Build the Blender plugin and Python module." ON)
 option(BUILD_APIDOC "Build the API documentation with Doxygen." ON)
 option(BUILD_SHARED_LIBS "Build shared/dynamic library instead of a static one." OFF) # Default to static
 
@@ -54,8 +55,17 @@ endif()
 
 # Libraries
 
+# Python
+if(BUILD_PLUGIN)
+	find_package(PythonLibs REQUIRED)
+	include_directories(${PYTHON_INCLUDE_DIRS})
+	list(APPEND LIBS ${PYTHON_LIBRARIES})
+	list(APPEND Boosts "python")
+endif()
+
 # Boost
-find_package(Boost 1.36 REQUIRED COMPONENTS thread)
+list(APPEND Boosts "thread")
+find_package(Boost 1.36 REQUIRED COMPONENTS ${Boosts})
 include_directories(${Boost_INCLUDE_DIRS})
 list(APPEND LIBS ${Boost_LIBRARIES})
 
@@ -83,4 +93,7 @@ add_subdirectory(src)
 if(BUILD_EXAMPLES)
 	add_subdirectory(examples)
 endif(BUILD_EXAMPLES)
+if(BUILD_PLUGIN)
+	add_subdirectory(blender)
+endif(BUILD_PLUGIN)
 
