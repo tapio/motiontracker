@@ -186,21 +186,7 @@ void ColorCrossTracker::solvePOSIT() {
 	CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 1.0e-4f);
 	cvPOSIT(m_positObject, &m_srcImagePoints[0], FOCAL_LENGTH, criteria, rotation_matrix, translation_vector);
 
-	// This can probably be done much more compactly
-	cv::Mat rotm(3,3, CV_32FC1);
-
-	rotm.ptr<float>(0)[0] = rotation_matrix[0];
-	rotm.ptr<float>(0)[1] = rotation_matrix[1];
-	rotm.ptr<float>(0)[2] = rotation_matrix[2];
-
-	rotm.ptr<float>(1)[0] = rotation_matrix[3];
-	rotm.ptr<float>(1)[1] = rotation_matrix[4];
-	rotm.ptr<float>(1)[2] = rotation_matrix[5];
-
-	rotm.ptr<float>(1)[0] = rotation_matrix[6];
-	rotm.ptr<float>(1)[1] = rotation_matrix[7];
-	rotm.ptr<float>(1)[2] = rotation_matrix[8];
-
+	cv::Mat rotm(3, 3, CV_32FC1, rotation_matrix);
 	cv::Mat rot;
 	cv::Rodrigues(rotm, rot);
 
