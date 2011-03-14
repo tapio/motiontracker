@@ -120,21 +120,24 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 	cv::cvtColor(frame, imgHSV, CV_BGR2HSV); // Switch to HSV color space
 
 	// Image points must be added in the same order as model points
-	calculateImagePoint(imgHSV, 60);	// Green
-	calculateImagePoint(imgHSV, 170);	// Red
-	calculateImagePoint(imgHSV, 100);	// Blue
-	calculateImagePoint(imgHSV, 25);	// Yellow
-
-
-	// Solve pose
-	if (m_solver == 1) solvePnP();
-	else if (m_solver == 2) solvePOSIT();
-	else throw std::runtime_error("Bad solver type in ColorCrossTracker");
+	// Also, all of them must be found or the calculations are aborted
+	if (
+		calculateImagePoint(imgHSV, 60) &&  // Green
+		calculateImagePoint(imgHSV, 170) && // Red
+		calculateImagePoint(imgHSV, 100) && // Blue
+		calculateImagePoint(imgHSV, 25)     // Yellow
+		)
+	{
+		// Solve pose
+		if (m_solver == 1) solvePnP();
+		else if (m_solver == 2) solvePOSIT();
+		else throw std::runtime_error("Bad solver type in ColorCrossTracker");
+	}
 
 	m_counter(); // Update FPS
 }
 
-void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
+bool ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
 	const int dH = 15; // How much hue can vary to be accepted
 
 	// Threshold
@@ -146,10 +149,13 @@ void ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
 	int x = m.m10 / m.m00;
 	int y = m.m01 / m.m00;
 
+	if (x < 0 || y < 0) return false; // Not found
+
 	// Save point
 	m_imagePoints.push_back(cv::Point2f(x,y));
-
 	m_srcImagePoints.push_back( cvPoint2D32f( x, y) );
+
+	return true;
 }
 
 void ColorCrossTracker::solvePnP() {
@@ -160,7 +166,6 @@ void ColorCrossTracker::solvePnP() {
 
 	// Project model points to image plane using calculated translation and rotation vectors
 	cv::projectPoints(cv::Mat(m_objectPoints),rvec,tvec,m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, m_projectedPoints);
-
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);
@@ -179,7 +184,7 @@ void ColorCrossTracker::solvePOSIT() {
 	float rotation_matrix[9];
 	float translation_vector[3];
 	CvTermCriteria criteria = cvTermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 1.0e-4f);
-	cvPOSIT( m_positObject, &m_srcImagePoints[0], FOCAL_LENGTH, criteria, rotation_matrix, translation_vector );
+	cvPOSIT(m_positObject, &m_srcImagePoints[0], FOCAL_LENGTH, criteria, rotation_matrix, translation_vector);
 
 	// This can probably be done much more compactly
 	cv::Mat rotm(3,3, CV_32FC1);
@@ -199,8 +204,7 @@ void ColorCrossTracker::solvePOSIT() {
 	cv::Mat rot;
 	cv::Rodrigues(rotm, rot);
 
-	for ( size_t  p=0; p<m_modelPoints.size(); p++ )
-	{
+	for (size_t p = 0; p < m_modelPoints.size(); ++p) {
 		cv::Point3f point3D;
 		point3D.x = rotation_matrix[0] * m_modelPoints[p].x +
 			rotation_matrix[1] * m_modelPoints[p].y +

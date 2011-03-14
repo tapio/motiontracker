@@ -257,7 +257,8 @@ public:
 
 private:
 	/// Calculates an image point for given hue, common to all solvers.
-	void calculateImagePoint(const cv::Mat& frame, int hue);
+	/// @return true if point was found
+	bool calculateImagePoint(const cv::Mat& frame, int hue);
 	/// Solve pose using solvePnP algorithm.
 	void solvePnP();
 	/// Solve pose using POSIT algorithm.
