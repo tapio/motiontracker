@@ -99,4 +99,3 @@ endif(BUILD_EXAMPLES)
 if(BUILD_PLUGIN)
 	add_subdirectory(blender)
 endif(BUILD_PLUGIN)
-
