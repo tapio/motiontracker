@@ -57,3 +57,14 @@ Currently there are seven (unfinished) example programs:
 * __gputest__ - simple video thresholding that can use GPU for calculations
 * __colortracker__ - tracks a colored blob
 * __tracker__ - will show the motion tracker in action, requires calibration with _calibrator_
+* __colorcalibrator__ - a utility for searching correct hue thresholding values for object tracking
+
+Colorcalibrator How To
+----------------------
+1. Take a picture by pressing any key
+2. Click on the four points to be tracked in the picture
+3. Press any key to enter the next stage of the calibration
+4. Adjust the hue and saturation/value sliders to get desired result
+5. Repeat for three other points
+6. Finished (Currently the values aren't saved into a file!)
+
