@@ -106,7 +106,6 @@ int main(int argc, char** argv)
 	std::cout << hues.at(0) << " " <<  hues.at(1) << " " <<  hues.at(2) << " " <<  hues.at(3) << std::endl;
 	std::cout << hue_thresholds.at(0) << " " << hue_thresholds.at(1) << " " << hue_thresholds.at(2) << " " << hue_thresholds.at(3) << std::endl;
 
-	cvDestroyAllWindows();
 	return 0;
 }
 
