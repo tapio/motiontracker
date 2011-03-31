@@ -12,7 +12,7 @@ void mouseHandler(int event, int x, int y, int flags, void *param)
 		/* left button down */
 		case CV_EVENT_LBUTTONDOWN:
 			std::cout << "Left button down:" << std::endl;
-			std::cout << "Hue: " <<  HSV->at<Scalar>(x,y) << std::endl;
+			std::cout << "Hue: " <<  (int)HSV->at<Vec3b>(x,y)[0] << std::endl;
 			break;
 /*
 		// right button down
