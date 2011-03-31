@@ -75,15 +75,15 @@ int main(int argc, char** argv)
 			displayOverlay("Calibration", "Press any key to take a picture", 1);
 		}
 	}
-	namedWindow("Thresholded image",1);
-	addText(img,"Click on a feature detect",Point(10,20),font);
+
+	addText(img,"Click on 4 feature points and press any key",Point(10,20),font);
 	imshow("Calibration", img);
 	cam.reset();
 	cv::cvtColor(img, imgHSV, CV_BGR2HSV); // Switch to HSV color space
-	imshow("Thresholded image", imgHSV);
 	setMouseCallback( "Calibration", mouseHandler, (void*)&imgHSV );
 	waitKey(0);
 	if (hues.size() == 4) {
+		namedWindow("Thresholded image",1);
 		for (int i = 0; i < 4; ++i) {
 			hue = hues.at(i);
 			cv::inRange(imgHSV, cv::Scalar(hue - dH, 120, 120), cv::Scalar(hue + dH, 255, 255), bin_image);
