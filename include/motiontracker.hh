@@ -24,11 +24,16 @@ struct CalibrationParameters
 	cv::Mat intrinsic_parameters; ///< Intrinsic parameters
 	cv::Mat distortion_coeffs; ///< Distortion coefficients
 
+	cv::Mat hues; ///< Hue values for object tracking
+	cv::Mat dHues; ///< Hue thresholds for object tracking
+	cv::Mat satval_l; ///< Saturation/Value low threshold for object tracking
+	cv::Mat satval_h; ///< Saturation/Value high threshold for object tracking
+
 	/// Dummy constructor
 	CalibrationParameters();
 
 	/// Constructor taking the parameters
-	CalibrationParameters(cv::Mat ip, cv::Mat dc);
+	CalibrationParameters(cv::Mat ip, cv::Mat dc, cv::Mat hues, cv::Mat dHues, cv::Mat satval_l, cv::Mat satval_h);
 
 	/**
 	  * Saves the parameters to a configuration file.
