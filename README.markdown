@@ -73,7 +73,7 @@ Blender-plugin How To
 1. Build the python module (libPyMotionTracker.so / PyMotionTracker.dll)
 2. If the name has lib-prefix, rename it to be without it (e.g. PyMotionTracker.so)
 3. Copy (or symlink) the python module and the plugin (motiontracker-blender.py) to Blender's script directory (~/.blender/scripts)
-4. Select an object to manipulate
-5. Open Blender and select the Scripts Window (green snake icon)
+4. Open Blender and select an object to manipulate
+5. Change to the Scripts Window (green snake icon)
 6. Start the plugin by accessing it from the menu: Scripts | Object | Motion Tracker
 
