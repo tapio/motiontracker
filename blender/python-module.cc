@@ -1,4 +1,5 @@
 #include <boost/python.hpp>
+#include <iostream>
 #include "pymotiontracker.hh"
 #include "motiontracker.hh"
 #include "utils.hh"
@@ -9,7 +10,14 @@ PyMotionTracker::PyMotionTracker(/*TODO: params*/)
 {
 	webcam = new Webcam;
 	tracker = new ColorCrossTracker(*webcam, 2);
-	// TODO: Handle resource freeing somehow
+	std::cout << "PyMotionTracker initialized." << std::endl;
+}
+
+PyMotionTracker::~PyMotionTracker()
+{
+	if (tracker) delete tracker;
+	if (webcam) delete webcam;
+	std::cout << "PyMotionTracker deinitialized." << std::endl;
 }
 
 bpy::tuple PyMotionTracker::getPosition() const

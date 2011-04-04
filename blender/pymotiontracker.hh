@@ -24,7 +24,10 @@ struct PyMotionTracker
 {
 	/// Constructor
 	PyMotionTracker(/*TODO: params*/);
-	
+
+	/// Destructor
+	~PyMotionTracker();
+
 	/// Returns position
 	boost::python::tuple getPosition() const;
 	
