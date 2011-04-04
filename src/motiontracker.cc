@@ -4,7 +4,7 @@
 #include "motiontracker.hh"
 
 
-MotionTracker::MotionTracker(Webcam &webcam, const CameraParameters &camParams)
+MotionTracker::MotionTracker(Webcam &webcam, const CalibrationParameters &camParams)
 	: WebcamListener(webcam), m_camParams(camParams), m_pos(), m_rot(), m_counter(5)
 { }
 
@@ -25,7 +25,7 @@ int MotionTracker::getFPS() const {
 
 
 
-ChessboardTracker::ChessboardTracker(Webcam &webcam, const CameraParameters &camParams)
+ChessboardTracker::ChessboardTracker(Webcam &webcam, const CalibrationParameters &camParams)
 	: MotionTracker(webcam, camParams), m_boardScaleFactor(25), m_boardH(9), m_numCorners(6*9), m_boardSize(cv::Size(6,9))
 {
 	for (int i = 0; i < m_numCorners; ++i)

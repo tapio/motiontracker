@@ -10,7 +10,7 @@ using namespace cv;
 struct MyWebcamReceiver: public WebcamListener {
 	std::string window;
 	FPSCounter counter;
-	CameraParameters cp;
+	CalibrationParameters cp;
 
 	// Test variables
 	float boardScaleFactor; // Chessboard square edge length in units you want to use

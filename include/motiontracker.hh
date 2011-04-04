@@ -19,16 +19,16 @@ namespace boost {
  *
  * It can also save/load them to/from an XML file.
  */
-struct CameraParameters
+struct CalibrationParameters
 {
 	cv::Mat intrinsic_parameters; ///< Intrinsic parameters
 	cv::Mat distortion_coeffs; ///< Distortion coefficients
 
 	/// Dummy constructor
-	CameraParameters();
+	CalibrationParameters();
 
 	/// Constructor taking the parameters
-	CameraParameters(cv::Mat ip, cv::Mat dc);
+	CalibrationParameters(cv::Mat ip, cv::Mat dc);
 
 	/**
 	  * Saves the parameters to a configuration file.
@@ -41,7 +41,7 @@ struct CameraParameters
 	  * @param filename path to the file used for reading
 	  * @return new object containing the read parameters
 	  */
-	static CameraParameters fromFile(std::string filename);
+	static CalibrationParameters fromFile(std::string filename);
 };
 
 
@@ -147,7 +147,7 @@ public:
 	 * @param webcam reference to a valid webcam for getting video
 	 * @param camParams camera parameters from calibration
 	 */
-	MotionTracker(Webcam &webcam, const CameraParameters &camParams = CameraParameters());
+	MotionTracker(Webcam &webcam, const CalibrationParameters &camParams = CalibrationParameters());
 
 	/** Virtual desctructor for derivatives. */
 	virtual ~MotionTracker() {}
@@ -175,7 +175,7 @@ public:
 
 protected:
 	mutable boost::mutex m_mutex; ///< Mutex for synchronization
-	CameraParameters m_camParams; ///< Camera parameters
+	CalibrationParameters m_camParams; ///< Camera parameters
 	cv::Vec3f m_pos; ///< Position vector
 	cv::Vec3f m_rot; ///< Rotation vector
 	FPSCounter m_counter; ///< FPS counter
@@ -194,7 +194,7 @@ public:
 	 * @param webcam reference to a valid webcam for getting video
 	 * @param camParams camera parameters from calibration
 	 */
-	ChessboardTracker(Webcam &webcam, const CameraParameters &camParams);
+	ChessboardTracker(Webcam &webcam, const CalibrationParameters &camParams);
 
 	/** Thread calls this, don't call directly. */
 	void frameEvent(const cv::Mat& frame);
@@ -270,7 +270,7 @@ private:
 	std::vector<cv::Point2f> m_savedImagePoints;
 
 	// PnP stuff
-	CameraParameters m_camParams;
+	CalibrationParameters m_camParams;
 
 	// Posit stuff
 	CvPOSITObject* m_positObject;

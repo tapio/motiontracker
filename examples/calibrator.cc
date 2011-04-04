@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 	std::cout << "Distortion coefficients:" << std::endl;
 	std::cout << distortion_coeffs.at<double>(0,0) << " " << distortion_coeffs.at<double>(0,1) << " " << distortion_coeffs.at<double>(0,2) << " " << distortion_coeffs.at<double>(0,3) << std::endl;
 
-	CameraParameters(intrinsic_matrix, distortion_coeffs).saveToFile("calibration.xml");
+	CalibrationParameters(intrinsic_matrix, distortion_coeffs).saveToFile("calibration.xml");
 
 	cvDestroyAllWindows();
 	return 0;
