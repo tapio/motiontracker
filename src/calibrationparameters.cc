@@ -28,8 +28,8 @@ void CalibrationParameters::saveToFile(std::string filename)
 // static
 CalibrationParameters CalibrationParameters::fromFile(std::string filename)
 {
-	cv::Mat ip, dc;
-	cv::Mat hues, dHues, satval_l, satval_h;
+	cv::Mat ip, dc, hues, dHues, satval_l, satval_h;
+
 	try {
 		cv::FileStorage fs(filename, cv::FileStorage::READ);
 		fs["intrinsic"] >> ip;
