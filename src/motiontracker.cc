@@ -118,11 +118,16 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 
 	// Image points must be added in the same order as model points
 	// Also, all of them must be found or the calculations are aborted
+
 	if (
-		calculateImagePoint(imgHSV, 60) &&  // Green
-		calculateImagePoint(imgHSV, 170) && // Red
-		calculateImagePoint(imgHSV, 100) && // Blue
-		calculateImagePoint(imgHSV, 25)     // Yellow
+		calculateImagePoint(imgHSV, m_calibParams.hues.at<int>(0), m_calibParams.dHues.at<int>(0),
+							m_calibParams.satval_l.at<int>(0), m_calibParams.satval_h.at<int>(0)) &&  // Green
+		calculateImagePoint(imgHSV, m_calibParams.hues.at<int>(1), m_calibParams.dHues.at<int>(1),
+							m_calibParams.satval_l.at<int>(1), m_calibParams.satval_h.at<int>(1)) && // Red
+		calculateImagePoint(imgHSV, m_calibParams.hues.at<int>(2), m_calibParams.dHues.at<int>(2),
+							m_calibParams.satval_l.at<int>(2), m_calibParams.satval_h.at<int>(2)) && // Blue
+		calculateImagePoint(imgHSV, m_calibParams.hues.at<int>(3), m_calibParams.dHues.at<int>(3),
+							m_calibParams.satval_l.at<int>(3), m_calibParams.satval_h.at<int>(3))     // Yellow
 		)
 	{
 		// Solve pose
