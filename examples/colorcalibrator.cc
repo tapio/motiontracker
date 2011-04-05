@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 		waitKey(0);
 	}
 
-	CalibrationParameters(Mat(), Mat(), Mat(hues), Mat(hue_thresholds), Mat(satval_l), Mat(satval_h)).saveToFile("calibration.xml");
+	CalibrationParameters(Mat(3,3,CV_64F, 0.0f), Mat(1,4,CV_64F, 0.0f), Mat(hues), Mat(hue_thresholds), Mat(satval_l), Mat(satval_h)).saveToFile("calibration.xml");
 	return 0;
 }
 
