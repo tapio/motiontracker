@@ -4,8 +4,8 @@
 #include "motiontracker.hh"
 
 
-MotionTracker::MotionTracker(Webcam &webcam, const CalibrationParameters &camParams)
-	: WebcamListener(webcam), m_camParams(camParams), m_pos(), m_rot(), m_counter(5)
+MotionTracker::MotionTracker(Webcam &webcam, const CalibrationParameters &calibParams)
+	: WebcamListener(webcam), m_calibParams(calibParams), m_pos(), m_rot(), m_counter(5)
 { }
 
 cv::Vec3f MotionTracker::getRotation() const {
@@ -25,8 +25,8 @@ int MotionTracker::getFPS() const {
 
 
 
-ChessboardTracker::ChessboardTracker(Webcam &webcam, const CalibrationParameters &camParams)
-	: MotionTracker(webcam, camParams), m_boardScaleFactor(25), m_boardH(9), m_numCorners(6*9), m_boardSize(cv::Size(6,9))
+ChessboardTracker::ChessboardTracker(Webcam &webcam, const CalibrationParameters &calibParams)
+	: MotionTracker(webcam, calibParams), m_boardScaleFactor(25), m_boardH(9), m_numCorners(6*9), m_boardSize(cv::Size(6,9))
 {
 	for (int i = 0; i < m_numCorners; ++i)
 		m_objectCorners.push_back(cv::Point3f(m_boardScaleFactor*(i / m_boardH), m_boardScaleFactor*(i % m_boardH), 0.0f));
@@ -39,7 +39,7 @@ void ChessboardTracker::frameEvent(const cv::Mat& frame) {
 	// Solve the pose
 	cv::Mat pos, rot;
 	if (patternFound && (int)m_corners.size() == m_numCorners) {
-		cv::solvePnP(cv::Mat(m_objectCorners), cv::Mat(m_corners), m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, rot, pos, false);
+		cv::solvePnP(cv::Mat(m_objectCorners), cv::Mat(m_corners), m_calibParams.intrinsic_parameters, m_calibParams.distortion_coeffs, rot, pos, false);
 
 		// Assign new values
 		boost::mutex::scoped_lock l(m_mutex);
@@ -75,9 +75,6 @@ void ColorTracker::frameEvent(const cv::Mat& frame) {
 	m_counter(); // Update FPS
 }
 
-
-
-
 ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 	: MotionTracker(webcam), m_solver(solver)
 {
@@ -94,7 +91,7 @@ ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 	m_positObject = cvCreatePOSITObject(&m_modelPoints[0], (int)m_modelPoints.size() );
 
 	try {
-		m_camParams = m_camParams.fromFile("calibration.xml");
+		m_calibParams = m_calibParams.fromFile("calibration.xml");
 	} catch (std::exception &e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
 	}
@@ -137,12 +134,10 @@ void ColorCrossTracker::frameEvent(const cv::Mat& frame) {
 	m_counter(); // Update FPS
 }
 
-bool ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, int hue) {
-	const int dH = 15; // How much hue can vary to be accepted
-
+bool ColorCrossTracker::calculateImagePoint(const cv::Mat& frame, const int hue, const int dHue, const int satval_low, const int satval_high) {
 	// Threshold
 	cv::Mat thresh;
-	cv::inRange(frame, cv::Scalar(hue - dH, 120, 120), cv::Scalar(hue + dH, 255, 255), thresh);
+	cv::inRange(frame, cv::Scalar(hue - dHue, satval_low, satval_low), cv::Scalar(hue + dHue, satval_high, satval_high), thresh);
 
 	// Calculate the moments to estimate the position
 	cv::Moments m = cv::moments(thresh, true);
@@ -162,10 +157,10 @@ void ColorCrossTracker::solvePnP() {
 	cv::Mat rvec, tvec;
 
 	// Calculate translation and rotation vectors
-	cv::solvePnP(cv::Mat(m_objectPoints), cv::Mat(m_imagePoints), m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs,rvec,tvec,false);
+	cv::solvePnP(cv::Mat(m_objectPoints), cv::Mat(m_imagePoints), m_calibParams.intrinsic_parameters, m_calibParams.distortion_coeffs,rvec,tvec,false);
 
 	// Project model points to image plane using calculated translation and rotation vectors
-	cv::projectPoints(cv::Mat(m_objectPoints),rvec,tvec,m_camParams.intrinsic_parameters, m_camParams.distortion_coeffs, m_projectedPoints);
+	cv::projectPoints(cv::Mat(m_objectPoints),rvec,tvec,m_calibParams.intrinsic_parameters, m_calibParams.distortion_coeffs, m_projectedPoints);
 
 	// Assign new values
 	boost::mutex::scoped_lock l(m_mutex);

@@ -180,7 +180,7 @@ public:
 
 protected:
 	mutable boost::mutex m_mutex; ///< Mutex for synchronization
-	CalibrationParameters m_camParams; ///< Camera parameters
+	CalibrationParameters m_calibParams; ///< Camera parameters
 	cv::Vec3f m_pos; ///< Position vector
 	cv::Vec3f m_rot; ///< Rotation vector
 	FPSCounter m_counter; ///< FPS counter
@@ -263,7 +263,7 @@ public:
 private:
 	/// Calculates an image point for given hue, common to all solvers.
 	/// @return true if point was found
-	bool calculateImagePoint(const cv::Mat& frame, int hue);
+	bool calculateImagePoint(const cv::Mat& frame, const int hue, const int dHue = 15, const int satval_low = 120, const int satval_high = 255);
 	/// Solve pose using solvePnP algorithm.
 	void solvePnP();
 	/// Solve pose using POSIT algorithm.
@@ -275,7 +275,7 @@ private:
 	std::vector<cv::Point2f> m_savedImagePoints;
 
 	// PnP stuff
-	CalibrationParameters m_camParams;
+	CalibrationParameters m_calibParams;
 
 	// Posit stuff
 	CvPOSITObject* m_positObject;
