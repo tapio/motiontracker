@@ -36,7 +36,7 @@ bpy::tuple PyMotionTracker::getRotation() const
 
 bpy::tuple PyMotionTracker::getRotationMatrix() const
 {
-	if (!tracker) return bpy::make_tuple(0, 0, 0, 0, 0, 0, 0, 0, 0);;
+	if (!tracker) return bpy::make_tuple(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	cv::Mat rotm = tracker->getRotationMatrix();
 	return bpy::make_tuple(rotm.at<double>(0,0), rotm.at<double>(0,1), rotm.at<double>(0,2),
 						   rotm.at<double>(1,0), rotm.at<double>(1,1), rotm.at<double>(1,2),
@@ -56,5 +56,6 @@ BOOST_PYTHON_MODULE(PyMotionTracker)
 	// The actual MotionTracker API
 	bpy::class_<PyMotionTracker>("PyMotionTracker")//, bpy::init<void /*TODO: constructor params*/>())
 		.def("getPosition", &PyMotionTracker::getPosition)
-		.def("getRotation", &PyMotionTracker::getRotation);
+		.def("getRotation", &PyMotionTracker::getRotation)
+		.def("getRotationMatrix", &PyMotionTracker::getRotationMatrix);
 }

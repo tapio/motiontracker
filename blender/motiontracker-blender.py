@@ -13,7 +13,7 @@ __bpydoc__=\
 This script utilizes a webcam motion tracker to rotate a blender object.
 '''
 
-from Blender import Draw, Scene
+from Blender import Draw, Scene, Mathutils
 import PyMotionTracker
 
 # Create a tracker object and initialize webcam
@@ -33,6 +33,16 @@ def gui():
 	# Get location and orientation from the tracker
 	loc = tracker.getPosition()
 	rot = tracker.getRotation()
+	
+	## Rotation matrix stuff
+	#rotm = tracker.getRotationMatrix()
+	
+	#rot_matrix =  Matrix([rotm[0],rotm[1],rotm[2]],
+	#[rotm[3],rotm[4],rotm[5]],
+	#[rotm[6],rotm[7],rotm[8]]);
+	
+	#euler = rot_matrix.toEuler();
+	
 
 	print "Location: " + str(loc)
 	print "Rotation: " + str(rot)
@@ -43,6 +53,7 @@ def gui():
 		#ob.loc = (ob.LocX + loc[0],  ob.LocY + loc[1],  ob.LocZ + loc[2])
 		#ob.rot = (ob.RotX + rot[0],  ob.RotY + rot[1],  ob.RotZ + rot[2])
 		ob.rot = (rot[0], rot[1], rot[2])
+		#ob.setEuler(euler);
 
 
 def event(evt, val):
