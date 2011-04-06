@@ -13,6 +13,11 @@ cv::Vec3f MotionTracker::getRotation() const {
 	return m_rot;
 }
 
+cv::Mat MotionTracker::getRotationMatrix() const {
+	boost::mutex::scoped_lock l(m_mutex);
+	return m_rotm;
+}
+
 cv::Vec3f MotionTracker::getPosition() const {
 	boost::mutex::scoped_lock l(m_mutex);
 	return m_pos;
@@ -217,6 +222,7 @@ void ColorCrossTracker::solvePOSIT() {
 	boost::mutex::scoped_lock l(m_mutex);
 	m_pos = cv::Vec3f(translation_vector[0],translation_vector[1],translation_vector[2]);
 	m_rot = rot;
+	m_rotm = rotm;
 	m_savedImagePoints = m_imagePoints;
 	m_savedProjectedPoints = m_projectedPoints;
 }

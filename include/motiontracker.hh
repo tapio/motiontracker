@@ -167,6 +167,13 @@ public:
 	cv::Vec3f getRotation() const;
 
 	/**
+	 * Returns the current orientation of the tracked object.
+	 * @return the rotation matrix of the tracked object
+	 */
+
+	cv::Mat getRotationMatrix() const;
+
+	/**
 	 * Returns the current center position of the tracked object.
 	 * @return the position in a vector
 	 */
@@ -183,6 +190,7 @@ protected:
 	CalibrationParameters m_calibParams; ///< Camera parameters
 	cv::Vec3f m_pos; ///< Position vector
 	cv::Vec3f m_rot; ///< Rotation vector
+	cv::Mat m_rotm; ///< Rotation matrix
 	FPSCounter m_counter; ///< FPS counter
 };
 
