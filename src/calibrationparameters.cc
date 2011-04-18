@@ -39,6 +39,10 @@ CalibrationParameters CalibrationParameters::fromFile(std::string filename)
 		fs["satval_l"] >> satval_l;
 		fs["satval_h"] >> satval_h;
 		fs.release();
+		// OpenCV silently ignores errors (like missing file to read),
+		// so let's check that we got all parameters
+		if (ip.empty() || dc.empty() || hues.empty() || dHues.empty() || satval_l.empty() || satval_h.empty())
+			throw std::runtime_error("Missing calibration parameters in " + filename);
 	} catch (cv::Exception& e) {
 		throw std::runtime_error(e.what());
 	}

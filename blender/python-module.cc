@@ -22,14 +22,14 @@ PyMotionTracker::~PyMotionTracker()
 
 bpy::tuple PyMotionTracker::getPosition() const
 {
-	if (!tracker) return bpy::make_tuple(0, 0, 0);;
+	if (!tracker) return bpy::make_tuple(0, 0, 0);
 	cv::Vec3f pos = tracker->getPosition();
 	return bpy::make_tuple(pos[0], pos[1], pos[2]);
 }
 
 bpy::tuple PyMotionTracker::getRotation() const
 {
-	if (!tracker) return bpy::make_tuple(0, 0, 0);;
+	if (!tracker) return bpy::make_tuple(0, 0, 0);
 	cv::Vec3f rot = tracker->getRotation();
 	return bpy::make_tuple(rot[0], rot[1], rot[2]);
 }

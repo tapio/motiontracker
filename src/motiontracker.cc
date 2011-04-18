@@ -95,11 +95,8 @@ ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 
 	m_positObject = cvCreatePOSITObject(&m_modelPoints[0], (int)m_modelPoints.size() );
 
-	try {
-		m_calibParams = m_calibParams.fromFile("calibration.xml");
-	} catch (std::exception &e) {
-		std::cout << "ERROR: " << e.what() << std::endl;
-	}
+	// Errors reading calibration are fatal
+	m_calibParams = m_calibParams.fromFile("calibration.xml");
 }
 
 std::vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {
