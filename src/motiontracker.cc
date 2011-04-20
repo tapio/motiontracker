@@ -5,7 +5,7 @@
 
 
 MotionTracker::MotionTracker(Webcam &webcam, const CalibrationParameters &calibParams)
-	: WebcamListener(webcam), m_calibParams(calibParams), m_pos(), m_rot(), m_counter(5)
+	: WebcamListener(webcam), m_calibParams(calibParams), m_pos(), m_rot(), m_rotm(cv::Mat::eye(3,3,CV_32F)), m_counter(5)
 { }
 
 cv::Vec3f MotionTracker::getRotation() const {
