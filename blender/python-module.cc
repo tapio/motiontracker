@@ -38,9 +38,9 @@ bpy::tuple PyMotionTracker::getRotationMatrix() const
 {
 	if (!tracker) return bpy::make_tuple(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	cv::Mat rotm = tracker->getRotationMatrix();
-	return bpy::make_tuple(rotm.at<double>(0,0), rotm.at<double>(0,1), rotm.at<double>(0,2),
-						   rotm.at<double>(1,0), rotm.at<double>(1,1), rotm.at<double>(1,2),
-						   rotm.at<double>(2,0), rotm.at<double>(2,1), rotm.at<double>(2,2));
+	return bpy::make_tuple(rotm.at<float>(0,0), rotm.at<float>(0,1), rotm.at<float>(0,2),
+						   rotm.at<float>(1,0), rotm.at<float>(1,1), rotm.at<float>(1,2),
+						   rotm.at<float>(2,0), rotm.at<float>(2,1), rotm.at<float>(2,2));
 }
 /// Hello world test function
 char const* greet()

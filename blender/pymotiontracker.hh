@@ -35,7 +35,7 @@ struct PyMotionTracker
     boost::python::tuple getRotation() const;
     
     /// Returns rotation as a matrix
-    boost::python::tuple getRotationMatrix() const;
+	boost::python::tuple getRotationMatrix() const;
 
     Webcam* webcam; ///< Webcam object
     ColorCrossTracker* tracker; ///< Tracker object
