@@ -47,16 +47,16 @@ def gui():
 
     print "Location: " + str(loc)
     print "Rotation: " + str(rot)
-    print "Rotation matrix: " + str(rotm)
-    print "Euler: " + str(euler)
+    # print "Rotation matrix: " + str(rotm)
+    print "Euler: " + str(euler[0])
 
     # Loop through the objects
     for ob in sel:
         # Manipulate object location and orientation
         #ob.loc = (ob.LocX + loc[0],  ob.LocY + loc[1],  ob.LocZ + loc[2])
         #ob.rot = (ob.RotX + rot[0],  ob.RotY + rot[1],  ob.RotZ + rot[2])
-        #ob.rot = (rot[0], rot[1], rot[2])
-        ob.setEuler(euler);
+        ob.rot = (euler[0]/180*3.1415, euler[1]/180*3.1415, euler[2]/180*3.1415)
+        #ob.setEuler(euler);
 
 
 def event(evt, val):

@@ -36,7 +36,7 @@ bpy::tuple PyMotionTracker::getRotation() const
 
 bpy::tuple PyMotionTracker::getRotationMatrix() const
 {
-	if (!tracker) return bpy::make_tuple(1, 0, 0, 0, 1, 0, 0, 0, 1);
+	if (!tracker) return bpy::make_tuple(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 	cv::Mat rotm = tracker->getRotationMatrix();
 	return bpy::make_tuple(rotm.at<float>(0,0), rotm.at<float>(0,1), rotm.at<float>(0,2),
 						   rotm.at<float>(1,0), rotm.at<float>(1,1), rotm.at<float>(1,2),
