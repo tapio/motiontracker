@@ -37,7 +37,7 @@ Compiling
     $ cd build
     $ cmake ..
     $ make
-    $ ./tracker
+
 
 By giving cmake-command a parameter in the form of -DBUILD\_XXX=OFF you can disable some parts of the project. Possible values for BUILD\_XXX are:
 
@@ -83,7 +83,7 @@ Blender-plugin How To
 1. Build the python module (libPyMotionTracker.so / PyMotionTracker.dll)
 2. If the name has lib-prefix, rename it to be without it (e.g. PyMotionTracker.so)
 3. Copy (or symlink) the python module and the plugin (motiontracker-blender.py) to Blender's script directory (~/.blender/scripts)
-4. Open Blender (calibration.xml in working directory) and select an object to manipulate
+4. Open Blender 2.49 (calibration.xml in working directory) and select an object to manipulate
 5. Change to the Scripts Window (green snake icon)
 6. Start the plugin by accessing it from the menu: Scripts | Object | Motion Tracker
 
