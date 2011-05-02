@@ -43,7 +43,6 @@ def gui():
     euler = rot_matrix.toEuler()
     
     print "Location: " + str(loc)
-    print "Rotation: " + str(rot)
     print "Euler angles: " + str(euler[0]) + " " + str(euler[1]) + " " + str(euler[2])
 
     # Loop through the objects
