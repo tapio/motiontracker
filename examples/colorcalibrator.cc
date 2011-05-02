@@ -1,3 +1,7 @@
+/**
+ * Tool for calibrating the color values of the reference object.
+ */
+
 #include <iostream>
 #include <cv.h>
 #include <highgui.h>
@@ -12,27 +16,15 @@ void mouseHandler(int event, int x, int y, int flags, void *param)
 	(void) flags;
 	Mat* HSV = (Mat*)param;
 	switch(event) {
-		/* left button down */
+		// Left button down
 		case CV_EVENT_LBUTTONDOWN:
 			std::cout << "Left button down:" << HSV->depth() << " " << std::endl;
 			std::cout << "Hue: " <<  (int)HSV->at<Vec3b>(y,x)[0] << std::endl;
 			std::cout << "Saturation: " <<  (int)HSV->at<Vec3b>(y,x)[1] << std::endl;
 			std::cout << "Value: " <<  (int)HSV->at<Vec3b>(y,x)[2] << std::endl;
-			if (hues.size() < 5)
+			if (hues.size() < 4)
 				hues.push_back((int)HSV->at<Vec3b>(y,x)[0]);
 			break;
-
-/*
-		// right button down
-		case CV_EVENT_RBUTTONDOWN:
-			std::cout << "Right button down:" << x << y << std::endl;
-			break;
-
-		// mouse move
-		case CV_EVENT_MOUSEMOVE:
-			break;
-
-			*/
 	}
 }
 
@@ -41,16 +33,14 @@ int main(int argc, char** argv)
 	(void)argc; (void)argv; // Suppress warnings
 	boost::scoped_ptr<Webcam> cam;
 	try {
-		std::cout << "Webcam succesfully initialized: ";
 		cam.reset(new Webcam);
-		std::cout << "yes" << std::endl;
 	} catch (std::exception&) {
-		std::cout << "no" << std::endl;
-		return 1;
+		std::cout << "Error: Could not initialize webcam" << std::endl;
+		return EXIT_FAILURE;
 	}
 
 	namedWindow("Calibration", 1);
-	
+
 	Mat img;
 	Mat imgHSV;
 	Mat bin_image;
@@ -76,12 +66,13 @@ int main(int argc, char** argv)
 		}
 	}
 
-	addText(img,"Click on 4 feature points and press any key",Point(10,20),font);
+	addText(img, "Click on 4 feature points and press any key", Point(10,20), font);
 	imshow("Calibration", img);
 	cam.reset();
 	cv::cvtColor(img, imgHSV, CV_BGR2HSV); // Switch to HSV color space
-	setMouseCallback( "Calibration", mouseHandler, (void*)&imgHSV );
+	setMouseCallback("Calibration", mouseHandler, (void*)&imgHSV);
 	waitKey(0);
+
 	if (hues.size() == 4) {
 		namedWindow("Thresholded image",1);
 		for (int i = 0; i < 4; ++i) {
@@ -100,11 +91,14 @@ int main(int argc, char** argv)
 			satval_l.push_back(satvall_switch_value);
 			satval_h.push_back(satvalh_switch_value);
 		}
-		waitKey(0);
+	} else {
+		std::cout << "Error: Expected 4 hues, got " << hues.size() << std::endl;
+		return EXIT_FAILURE;
 	}
 
 	CalibrationParameters(Mat(3,3,CV_64F, 0.0f), Mat(1,4,CV_64F, 0.0f), Mat(hues), Mat(hue_thresholds), Mat(satval_l), Mat(satval_h)).saveToFile("calibration.xml");
-	return 0;
+	std::cout << "Parameters written to calibration.xml" << std::endl;
+	return EXIT_SUCCESS;
 }
 
 
