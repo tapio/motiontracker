@@ -7,6 +7,7 @@
 
 using namespace cv;
 
+/// Main
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings

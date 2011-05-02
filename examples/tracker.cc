@@ -1,3 +1,10 @@
+/**
+ * @file tracker.cc
+ * @brief Main demo program.
+ *
+ * Overlays the model on top of the webcam video.
+ */
+
 #include <iostream>
 #include <cv.h>
 #include <highgui.h>
@@ -7,11 +14,13 @@
 
 using namespace cv;
 
+/**
+ * @brief Listener class implementation.
+ */
 struct MyTracker: public WebcamListener, public MotionListener {
 	ColorCrossTracker* ctr;
 	std::string window;
 	FPSCounter counter;
-
 
 	volatile int x;
 	volatile int y;
@@ -68,6 +77,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 	}
 };
 
+/// Main
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings

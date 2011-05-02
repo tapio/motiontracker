@@ -1,3 +1,10 @@
+/**
+ * @file gputest.cc
+ * @brief Simple OpenCV GPU CUDA module test.
+ *
+ * Falls back to CPU if CUDA is not available.
+ */
+
 #include <iostream>
 #include <cv.h>
 #include <opencv2/gpu/gpu.hpp>
@@ -8,6 +15,9 @@
 
 using namespace cv;
 
+/**
+ * @brief Listener class implementation.
+ */
 struct MyWebcamReceiver: public WebcamListener {
 	std::string window;
 	FPSCounter counter;
@@ -43,6 +53,7 @@ struct MyWebcamReceiver: public WebcamListener {
 	}
 };
 
+/// Main
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings

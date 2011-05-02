@@ -1,5 +1,8 @@
 /**
- * Tool for calibrating the color values of the reference object.
+ * @file colorcalibrator.cc
+ * @brief Tool for calibrating the color values of the reference object.
+ *
+ * Use this tool to generate calibration.xml required by 'tracker'.
  */
 
 #include <iostream>
@@ -24,6 +27,7 @@ void mouseHandler(int event, int x, int y, int flags, void *param)
 	}
 }
 
+/// Main
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings

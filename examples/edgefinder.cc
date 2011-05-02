@@ -1,3 +1,10 @@
+/**
+ * @file edgefinder.cc
+ * @brief Minimal program webcam / OpenCV test program.
+ *
+ * Shows how to get images through MotionTracker's webcam API and manipulates them with OpenCV.
+ */
+
 #include <iostream>
 #include <cv.h>
 #include <highgui.h>
@@ -7,6 +14,9 @@
 
 using namespace cv;
 
+/**
+ * @brief Listener class implementation.
+ */
 struct MyWebcamReceiver: public WebcamListener {
 	std::string window;
 	FPSCounter counter;
@@ -29,6 +39,7 @@ struct MyWebcamReceiver: public WebcamListener {
 	}
 };
 
+/// Main
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings

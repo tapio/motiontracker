@@ -1,3 +1,11 @@
+/**
+ * @file colortracker.cc
+ * @brief Demonstrates the concept of color tracking by thresholding.
+ *
+ * Finds dark blue color and tracks it.
+ * This is the core idea behind the MotionTracker's implementation.
+ */
+
 #include <iostream>
 #include <cv.h>
 #include <highgui.h>
@@ -7,6 +15,9 @@
 
 using namespace cv;
 
+/**
+ * @brief Listener class implementation.
+ */
 struct MyTracker: public WebcamListener, public MotionListener {
 	std::string window;
 	FPSCounter counter;
@@ -33,6 +44,7 @@ struct MyTracker: public WebcamListener, public MotionListener {
 	}
 };
 
+/// Main
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv; // Suppress warnings

@@ -1,7 +1,7 @@
 PROJECT_NAME           = @PROJECT_NAME@
 PROJECT_NUMBER         = @PROJECT_VERSION@
 OUTPUT_DIRECTORY       = "@CMAKE_BINARY_DIR@/doxygen"
-INPUT                  = "@CMAKE_SOURCE_DIR@/include" "@CMAKE_SOURCE_DIR@/blender"
+INPUT                  = "@CMAKE_SOURCE_DIR@/include" "@CMAKE_SOURCE_DIR@/blender" "@CMAKE_SOURCE_DIR@/examples"
 FULL_PATH_NAMES        = NO
 TAB_SIZE               = 4
 BUILTIN_STL_SUPPORT    = YES

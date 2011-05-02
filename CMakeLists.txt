@@ -41,7 +41,7 @@ if(BUILD_APIDOC)
 			OUTPUT ${CMAKE_BINARY_DIR}/doxygen
 			COMMAND ${DOXYGEN_EXECUTABLE}
 			ARGS ${CMAKE_BINARY_DIR}/Doxyfile
-			DEPENDS ${CMAKE_SOURCE_DIR}/include/*.hh ${CMAKE_SOURCE_DIR}/Doxyfile.in
+			DEPENDS ${CMAKE_SOURCE_DIR}/include/*.hh ${CMAKE_SOURCE_DIR}/examples/*.cc ${CMAKE_SOURCE_DIR}/Doxyfile.in
 			COMMENT "Generating API documentation with Doxygen" VERBATIM
 		)
 		add_custom_target(doc ALL
