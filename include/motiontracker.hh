@@ -1,5 +1,13 @@
 #pragma once
 
+/**
+ * @mainpage
+ *
+ * This is the API reference of the Motion Tracker library and friends.
+ * The general documentation is available in the README.markdown file.
+ * The compilation instructions are also located there.
+ */
+
 #include <cv.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/mutex.hpp>
