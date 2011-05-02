@@ -7,7 +7,7 @@ Group: 'Object'
 Tooltip: 'Rotate object by using a webcam motion tracker'
 """
 
-__author__ = "Tapio Vierros"
+__author__ = "Tapio Vierros, Antti Virta"
 __bpydoc__=\
 '''
 This script utilizes a webcam motion tracker to rotate a blender object.

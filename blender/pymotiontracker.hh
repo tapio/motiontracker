@@ -23,7 +23,7 @@ class ColorCrossTracker;
 struct PyMotionTracker
 {
 	/// Constructor
-	PyMotionTracker(/*TODO: params*/);
+	PyMotionTracker();
 
 	/// Destructor
 	~PyMotionTracker();

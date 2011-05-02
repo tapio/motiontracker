@@ -54,7 +54,7 @@ BOOST_PYTHON_MODULE(PyMotionTracker)
 	bpy::def("greet", greet);
 
 	// The actual MotionTracker API
-	bpy::class_<PyMotionTracker>("PyMotionTracker")//, bpy::init<void /*TODO: constructor params*/>())
+	bpy::class_<PyMotionTracker>("PyMotionTracker")
 		.def("getPosition", &PyMotionTracker::getPosition)
 		.def("getRotation", &PyMotionTracker::getRotation)
 		.def("getRotationMatrix", &PyMotionTracker::getRotationMatrix);
