@@ -19,9 +19,9 @@ using namespace cv;
  * @brief Listener class implementation.
  */
 struct MyWebcamReceiver: public WebcamListener {
-	std::string window;
-	FPSCounter counter;
-	bool use_gpu;
+	std::string window; /// Window title / OpenCV id
+	FPSCounter counter; /// FPS counter
+	bool use_gpu; /// Switch for GPU enabling
 
 	MyWebcamReceiver(Webcam& webcam, std::string win)
 		: WebcamListener(webcam), window(win), counter(5), use_gpu(cv::gpu::getCudaEnabledDeviceCount())

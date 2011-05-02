@@ -17,22 +17,14 @@ using namespace cv;
 /**
  * @brief Listener class implementation.
  */
-struct MyTracker: public WebcamListener, public MotionListener {
-	ColorCrossTracker* ctr;
-	std::string window;
-	FPSCounter counter;
+struct MyTracker: public WebcamListener {
+	ColorCrossTracker* ctr; /// Pointer to the tracker instance
+	std::string window; /// Window title / OpenCV id
+	FPSCounter counter; /// FPS counter
 
-	volatile int x;
-	volatile int y;
-
-	MyTracker(Webcam& cam, MotionTracker& tr, ColorCrossTracker* ctr, std::string win)
-		: WebcamListener(cam), MotionListener(tr), ctr(ctr), window(win), counter(5), x(), y()
+	MyTracker(Webcam& cam, ColorCrossTracker* ctr, std::string win)
+		: WebcamListener(cam), ctr(ctr), window(win), counter(5)
 	{ }
-
-	void motionEvent(cv::Vec3f pos, cv::Vec3f) {
-		x = pos[0];
-		y = pos[1];
-	}
 
 	void frameEvent(const cv::Mat& frame) {
 		Mat img(frame);
@@ -97,7 +89,7 @@ int main(int argc, char** argv)
 
 	{
 		// Launch a receiver for doing the work whenever a frame is available
-		MyTracker mytracker(*webcam, *tracker, tracker.get(), window);
+		MyTracker mytracker(*webcam, tracker.get(), window);
 
 		// Rest here
 		while (waitKey(30) < 0);
