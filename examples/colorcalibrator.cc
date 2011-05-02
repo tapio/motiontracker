@@ -18,10 +18,6 @@ void mouseHandler(int event, int x, int y, int flags, void *param)
 	switch(event) {
 		// Left button down
 		case CV_EVENT_LBUTTONDOWN:
-			std::cout << "Left button down:" << HSV->depth() << " " << std::endl;
-			std::cout << "Hue: " <<  (int)HSV->at<Vec3b>(y,x)[0] << std::endl;
-			std::cout << "Saturation: " <<  (int)HSV->at<Vec3b>(y,x)[1] << std::endl;
-			std::cout << "Value: " <<  (int)HSV->at<Vec3b>(y,x)[2] << std::endl;
 			if (hues.size() < 4)
 				hues.push_back((int)HSV->at<Vec3b>(y,x)[0]);
 			break;
@@ -66,10 +62,10 @@ int main(int argc, char** argv)
 		}
 	}
 
-	addText(img, "Click on 4 feature points and press any key", Point(10,20), font);
+	addText(img, "Click on 4 feature points and press any key. Order: Green, Red, Blue, Yellow ", Point(10,20), font);
 	imshow("Calibration", img);
 	cam.reset();
-	cv::cvtColor(img, imgHSV, CV_BGR2HSV); // Switch to HSV color space
+	cv::cvtColor(img, imgHSV, CV_BGR2HSV); // Switch to HSV color sspace
 	setMouseCallback("Calibration", mouseHandler, (void*)&imgHSV);
 	waitKey(0);
 
@@ -77,9 +73,9 @@ int main(int argc, char** argv)
 		namedWindow("Thresholded image",1);
 		for (int i = 0; i < 4; ++i) {
 			hue = hues.at(i);
-			cv::inRange(imgHSV, cv::Scalar(hue - dH, 120, 120), cv::Scalar(hue + dH, 255, 255), bin_image);
+			cv::inRange(imgHSV, cv::Scalar(hue - dH, satvall_switch_value, satvall_switch_value), cv::Scalar(hue + dH, satvalh_switch_value, satvalh_switch_value), bin_image);
 			imshow("Thresholded image", bin_image);
-			createTrackbar( "Hue", "Thresholded image", &hue_switch_value, 50);
+			createTrackbar( "Hue delta", "Thresholded image", &hue_switch_value, 50);
 			createTrackbar( "Sat/Val low", "Thresholded image", &satvall_switch_value, 255);
 			createTrackbar( "Sat/Val high", "Thresholded image", &satvalh_switch_value, 255);
 			while (waitKey(30) < 0) {
