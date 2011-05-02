@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.6)
 cmake_policy(VERSION 2.6)
 set(PROJECT_VERSION "alpha")
 
-option(BUILD_EXAMPLES "Build the example program(s)." ON)
+option(BUILD_EXAMPLES "Build the example programs." ON)
+option(BUILD_DEPRECATED "Build deprecated example programs." OFF)
 option(BUILD_PLUGIN "Build the Blender plugin and Python module." ON)
 option(BUILD_APIDOC "Build the API documentation with Doxygen." ON)
 option(BUILD_SHARED_LIBS "Build shared/dynamic library instead of a static one." OFF) # Default to static

@@ -41,6 +41,7 @@ By giving cmake-command a parameter in the form of -DBUILD\_XXX=OFF you can disa
 
 * BUILD_APIDOC
 * BUILD_EXAMPLES
+* BUILD_DEPRECATED
 * BUILD_PLUGIN
 * BUILD\_SHARED\_LIBS (defaults to OFF, enable with ON)
 

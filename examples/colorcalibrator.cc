@@ -12,7 +12,7 @@
 
 using namespace cv;
 
-std::vector<int> hues;
+std::vector<int> hues; /// Hue values from the mouse clicks
 
 void mouseHandler(int event, int x, int y, int flags, void *param)
 {
