@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 
 	int hue;
 	int dH = 0;
-	int hue_switch_value = 0;
+	int hue_switch_value = 10;
 	int satvall_switch_value = 120;
 	int satvalh_switch_value = 255;
 
