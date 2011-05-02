@@ -46,7 +46,7 @@ void drawScene(void*)
 	// FIXME: Bad :(
 	cv::Vec3f rot = tracker->getRotation();
 	float magnitude = cv::norm(rot);
-	float sum = rot[0] + rot[1] + rot[2];
+	//float sum = rot[0] + rot[1] + rot[2];
 	float rx = 0; //rot[0] / sum;
 	float ry = 0; //rot[1] / sum;
 	float rz = 0; //rot[2] / sum;
