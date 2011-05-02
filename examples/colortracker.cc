@@ -19,20 +19,28 @@ using namespace cv;
  * @brief Listener class implementation.
  */
 struct MyTracker: public WebcamListener, public MotionListener {
-	std::string window;
-	FPSCounter counter;
-	volatile int x;
-	volatile int y;
+	std::string window; ///< Window title / OpenCV id
+	FPSCounter counter; ///< FPS counter
+	volatile int x; ///< X coordinate
+	volatile int y; ///< Y coordinate
 
+	/// Constructor
+	/// @param cam reference to a webcam object
+	/// @param tr reference to a tracker object
+	/// @param win OpenCV window name
 	MyTracker(Webcam& cam, MotionTracker& tr, std::string win)
 		: WebcamListener(cam), MotionListener(tr), window(win), counter(5), x(), y()
 	{ }
 
+	/// Receives motion events.
+	/// @param pos the position of the motion event
 	void motionEvent(cv::Vec3f pos, cv::Vec3f) {
 		x = pos[0];
 		y = pos[1];
 	}
 
+	/// Receives frames.
+	/// @param frame the frame
 	void frameEvent(const cv::Mat& frame) {
 		Mat img(frame);
 		// Add FPS indicator

@@ -18,14 +18,21 @@ using namespace cv;
  * @brief Listener class implementation.
  */
 struct MyTracker: public WebcamListener {
-	ColorCrossTracker* ctr; /// Pointer to the tracker instance
-	std::string window; /// Window title / OpenCV id
-	FPSCounter counter; /// FPS counter
 
+	ColorCrossTracker* ctr; ///< Pointer to the tracker instance
+	std::string window; ///< Window title / OpenCV id
+	FPSCounter counter; ///< FPS counter
+
+	/// Constructor
+	/// @param cam reference to a webcam object
+	/// @param ctr pointer to a tracker object
+	/// @param win OpenCV window name
 	MyTracker(Webcam& cam, ColorCrossTracker* ctr, std::string win)
 		: WebcamListener(cam), ctr(ctr), window(win), counter(5)
 	{ }
 
+	/// Receives frames.
+	/// @param frame the frame
 	void frameEvent(const cv::Mat& frame) {
 		Mat img(frame);
 		std::vector<Point2f> imagePoints = ctr->getImagePoints();
@@ -41,7 +48,7 @@ struct MyTracker: public WebcamListener {
 		for (size_t i = 0; i < projectedPoints.size(); ++i) {
 			if (i > 0)
 				line(img, projectedPoints[0], projectedPoints[i], CV_RGB(255, 255, 255),2);
-			circle(img,projectedPoints[i],3,Scalar(0,255,255),3);
+			circle(img, projectedPoints[i], 3, Scalar(0,255,255), 3);
 		}
 
 		// Print FPS indicator and position + rotation vector components
@@ -55,10 +62,10 @@ struct MyTracker: public WebcamListener {
 		putText(img, loc,
 			Point(0,455), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
-		rotv = "Rotation vector: x: " + boost::lexical_cast<std::string>((int)ctr->getRotation()[0]) + ' '
-			  + "y: " + boost::lexical_cast<std::string>((int)ctr->getRotation()[1]) + ' '
-			  + "z: " + boost::lexical_cast<std::string>((int)ctr->getRotation()[2]) + ' '
-			  + "mag: " + boost::lexical_cast<std::string>((int)(norm(ctr->getRotation())*180/3.1415));
+		rotv = "Rotation vector: x: " + boost::lexical_cast<std::string>((float)ctr->getRotation()[0]) + ' '
+			  + "y: " + boost::lexical_cast<std::string>((float)ctr->getRotation()[1]) + ' '
+			  + "z: " + boost::lexical_cast<std::string>((float)ctr->getRotation()[2]) + ' '
+			  + "mag: " + boost::lexical_cast<std::string>((float)(norm(ctr->getRotation())*180/3.1415));
 		putText(img, rotv,
 			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 

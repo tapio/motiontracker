@@ -18,13 +18,18 @@ using namespace cv;
  * @brief Listener class implementation.
  */
 struct MyWebcamReceiver: public WebcamListener {
-	std::string window;
-	FPSCounter counter;
+	std::string window; ///< Window title / OpenCV id
+	FPSCounter counter; ///< FPS counter
 
+	/// Constructor
+	/// @param webcam reference to a webcam object
+	/// @param win OpenCV window name
 	MyWebcamReceiver(Webcam& webcam, std::string win)
 		: WebcamListener(webcam), window(win), counter(5)
 	{ }
 
+	/// Receives frames.
+	/// @param frame the frame
 	void frameEvent(const Mat &frame) {
 		Mat edges;
 		cvtColor(frame, edges, CV_BGR2GRAY); // Switch to grayscale

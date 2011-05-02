@@ -30,6 +30,8 @@ struct MyWebcamReceiver: public WebcamListener {
 		else std::cout << "GPU acceleration disabled." << std::endl;
 	}
 
+	/// Receives frames.
+	/// @param frame the frame
 	void frameEvent(const Mat &frame) {
 		Mat img;
 		if (use_gpu) {

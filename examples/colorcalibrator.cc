@@ -12,8 +12,14 @@
 
 using namespace cv;
 
-std::vector<int> hues; /// Hue values from the mouse clicks
+std::vector<int> hues; ///< Hue values from the mouse clicks
 
+/// Receives mouse events from OpenCV
+/// @param event the event id
+/// @param x mouse x coordinate
+/// @param y mouse y coordinate
+/// @param flags flags
+/// @param param param
 void mouseHandler(int event, int x, int y, int flags, void *param)
 {
 	(void) flags;
