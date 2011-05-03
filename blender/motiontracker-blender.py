@@ -22,13 +22,13 @@ from collections import deque
 tracker = PyMotionTracker.PyMotionTracker()
 
 # Select rotation method between absolute (euler) and rotational
-eulerMethod = False
+eulerMethod = True
 
 filterSize = 10
-d = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-meanX = deque(d,filterSize)
-meanY = deque(d,filterSize)
-meanZ = deque(d,filterSize)
+filterInit = [0] * filterSize
+meanX = deque(filterInit,filterSize)
+meanY = deque(filterInit,filterSize)
+meanZ = deque(filterInit,filterSize)
 
 def gui():
     global tracker
@@ -52,7 +52,6 @@ def gui():
     rotMat = RotationMatrix(rotv.length,4,"r",rotv)
     euler = rotMat.toEuler()
     
-   
         
     print "Location: " + str(loc)
     print "Euler angles: " + str(euler[0]) + " " + str(euler[1]) + " " + str(euler[2])
@@ -61,6 +60,7 @@ def gui():
     if euler[0] != 0 and euler[1] != 0 and euler[2] != 0:
          # Add the angles to deques, which manage their size themselves
         if eulerMethod:
+            # Do filtering with moving average
             meanX.append(euler[0])
             meanY.append(euler[1])
             meanZ.append(euler[2])
