@@ -34,6 +34,7 @@ def gui():
 
     # Get location and orientation from the tracker
     loc = tracker.getPosition()
+    rot = tracker.getRotation()
     rotm = tracker.getRotationMatrix()
     
     rot_matrix =  Matrix([rotm[0],rotm[1],rotm[2]],
@@ -42,6 +43,9 @@ def gui():
     
     euler = rot_matrix.toEuler()
     
+    rotv = Vector(rot[0], rot[1], rot[2])
+    rotMat = RotationMatrix(rotv.length,4,"r",rotv)
+    
     print "Location: " + str(loc)
     print "Euler angles: " + str(euler[0]) + " " + str(euler[1]) + " " + str(euler[2])
 
@@ -49,7 +53,11 @@ def gui():
     if euler[0] != 0 and euler[1] != 0 and euler[2] != 0:
         for ob in sel:
             # Manipulate object location and orientation
-            ob.rot = (degToRad*euler[0], degToRad*euler[1], degToRad*euler[2])
+            # ob.RotX = degToRad*euler[0]
+            # ob.RotY = degToRad*euler[1]
+            # ob.RotZ = degToRad*euler[2]
+            ob.setMatrix(rotMat * ob.getMatrix())
+            # = (degToRad*euler[0], degToRad*euler[1], degToRad*euler[2])
 
 
 def event(evt, val):
