@@ -34,6 +34,7 @@ struct MyWebcamReceiver: public WebcamListener {
 	/// @param frame the frame
 	void frameEvent(const Mat &frame) {
 		Mat img;
+		Timer t;
 		if (use_gpu) {
 			// We need intermediate matrices with GPU
 			gpu::GpuMat gpuframe(frame), gray, blur, binary;
@@ -47,7 +48,8 @@ struct MyWebcamReceiver: public WebcamListener {
 			threshold(img, img, 100, 255, THRESH_BINARY); // Threshold
 		}
 		// Add FPS indicator
-		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
+		putText(img, "FPS: " + boost::lexical_cast<std::string>(counter.getFPS())
+			+ "   Algo FPS: " + boost::lexical_cast<std::string>(int(1.0/t.interval())),
 			Point(0,30), FONT_HERSHEY_PLAIN, 2, CV_RGB(255,0,255));
 		// Show on screen
 		imshow(window, img);
