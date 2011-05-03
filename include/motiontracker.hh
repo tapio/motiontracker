@@ -266,7 +266,7 @@ public:
 	 * @param calibParams the calibration parameters
 	 * @param solver the method used: 1 = solvePnP, 2 = POSIT
 	 */
-	ColorCrossTracker(Webcam &webcam, const CalibrationParameters &calibParams, int solver = 1);
+	ColorCrossTracker(Webcam &webcam, const CalibrationParameters &calibParams, int solver = 2);
 
 	/** Thread calls this, don't call directly. */
 	void frameEvent(const cv::Mat& frame);
