@@ -6,7 +6,7 @@
 
 namespace bpy = boost::python;
 
-PyMotionTracker::PyMotionTracker(/*TODO: params*/)
+PyMotionTracker::PyMotionTracker()
 {
 	CalibrationParameters calibParams = CalibrationParameters::fromFile("calibration.xml");
 	webcam = new Webcam;
