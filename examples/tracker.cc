@@ -56,6 +56,7 @@ struct MyTracker: public WebcamListener {
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
 			Point(0, 475), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
+		#ifdef PRINT_ROTLOC
 		std::string loc, rotv;
 		loc = "Position vector: x: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[0]) + ' '
 			  + "y: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[1]) + ' '
@@ -69,6 +70,7 @@ struct MyTracker: public WebcamListener {
 			  + "mag: " + boost::lexical_cast<std::string>((float)(norm(ctr->getRotation())*180/3.1415));
 		putText(img, rotv,
 			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
+		#endif // PRINT_LOCROT
 
 		// Show on screen
 		imshow(window, img);
@@ -89,7 +91,7 @@ int main(int argc, char** argv)
 		tracker.reset(new ColorCrossTracker(*webcam, calibParams, 2));
 	} catch (std::exception const &e) {
 		std::cout << "Error: " << e.what() << std::endl;
-		return 1;
+		return EXIT_FAILURE;
 	}
 
 	std::string window = "video";
@@ -104,5 +106,5 @@ int main(int argc, char** argv)
 	}
 
 	cvDestroyWindow(window.c_str());
-	return 0;
+	return EXIT_SUCCESS;
 }
