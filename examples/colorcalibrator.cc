@@ -2,7 +2,8 @@
  * @file colorcalibrator.cc
  * @brief Tool for calibrating the color values of the reference object.
  *
- * Use this tool to generate calibration.xml required by 'tracker'.
+ * Use this tool to generate calibration.xml required by 'tracker'. See the
+ * README for instructions on how to use.
  */
 
 #include <iostream>
@@ -53,10 +54,13 @@ int main(int argc, char** argv)
 
 	int hue;
 	int dH = 0;
+
+	// Initial values for GUI sliders
 	int hue_switch_value = 10;
 	int satvall_switch_value = 120;
 	int satvalh_switch_value = 255;
 
+	// Containers for calibration values
 	std::vector<int> hue_thresholds;
 	std::vector<int> satval_l;
 	std::vector<int> satval_h;

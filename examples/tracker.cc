@@ -2,7 +2,8 @@
  * @file tracker.cc
  * @brief Main demo program.
  *
- * Overlays the model on top of the webcam video.
+ * Detects the reference object from the webcam video and calculates its pose.
+ * Validation of the calculation is done by overlay.
  */
 
 #include <iostream>
@@ -37,12 +38,12 @@ struct MyTracker: public WebcamListener {
 		Mat img(frame);
 		std::vector<Point2f> imagePoints = ctr->getImagePoints();
 
-		// Draw circles to detected tips
+		// Draw circles to detected tips with magenta
 		for (size_t i = 0; i < imagePoints.size(); ++i) {
 			circle(img,imagePoints[i],3,Scalar(255,0,255),3);
 		}
 
-		// Draw reprojected points
+		// Draw reprojected points with yellow color
 		std::vector<Point2f> projectedPoints = ctr->getProjectedPoints();
 
 		for (size_t i = 0; i < projectedPoints.size(); ++i) {
@@ -70,7 +71,6 @@ struct MyTracker: public WebcamListener {
 			Point(0,435), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
 		// Show on screen
-		//cvtColor(img, img, CV_BGR2HSV); // Switch to HSV color space
 		imshow(window, img);
 		counter(); // Update FPS counter
 	}

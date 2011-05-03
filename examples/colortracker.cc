@@ -2,8 +2,8 @@
  * @file colortracker.cc
  * @brief Demonstrates the concept of color tracking by thresholding.
  *
- * Finds dark blue color and tracks it.
- * This is the core idea behind the MotionTracker's implementation.
+ * Uses HSV thresholding to find dark blue color and tracks it.
+ * This is the core idea behind the MotionTracker's object detection.
  */
 
 #include <iostream>
@@ -58,9 +58,10 @@ int main(int argc, char** argv)
 	(void)argc; (void)argv; // Suppress warnings
 	boost::scoped_ptr<Webcam> webcam;
 	boost::scoped_ptr<ColorTracker> tracker;
+	int hueToTrack = 100; // Tracked color, value from 0 to 179
 	try {
 		webcam.reset(new Webcam);
-		tracker.reset(new ColorTracker(*webcam, 100)); // Track darkish blue
+		tracker.reset(new ColorTracker(*webcam, hueToTrack)); // Track darkish blue
 	} catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;
 		return 1;
