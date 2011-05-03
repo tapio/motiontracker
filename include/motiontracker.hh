@@ -138,6 +138,12 @@ struct WebcamListener: public boost::noncopyable
 	 */
 	virtual void frameEvent(const cv::Mat& frame) { (void)frame; }
 
+	/**
+	 * Returns a reference to the associated Webcam instance.
+	 * @return the Webcam instance
+	 */
+	Webcam& getWebcam() { return m_webcam; }
+
 private:
 
 	Webcam &m_webcam; /// Reference to the Webcam object used for polling frames.

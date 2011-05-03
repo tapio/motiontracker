@@ -24,14 +24,13 @@ struct MyTracker: public WebcamListener {
 
 	ColorCrossTracker* ctr; ///< Pointer to the tracker instance
 	std::string window; ///< Window title / OpenCV id
-	FPSCounter counter; ///< FPS counter
 
 	/// Constructor
 	/// @param cam reference to a webcam object
 	/// @param ctr pointer to a tracker object
 	/// @param win OpenCV window name
 	MyTracker(Webcam& cam, ColorCrossTracker* ctr, std::string win)
-		: WebcamListener(cam), ctr(ctr), window(win), counter(5)
+		: WebcamListener(cam), ctr(ctr), window(win)
 	{ }
 
 	/// Receives frames.
@@ -54,11 +53,13 @@ struct MyTracker: public WebcamListener {
 			circle(img, projectedPoints[i], 3, Scalar(0,255,255), 3);
 		}
 
-		// Print FPS indicator and position + rotation vector components
-		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
+		// Print FPS indicators
+		putText(img, "Webcam FPS: " + boost::lexical_cast<std::string>(getWebcam().getFPS())
+			+ "   Tracker FPS: " + boost::lexical_cast<std::string>(ctr->getFPS()),
 			Point(0, 475), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
 		#ifdef PRINT_LOCROT
+		// Print position + rotation vector components
 		std::string loc, rotv;
 		loc = "Position vector: x: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[0]) + ' '
 			  + "y: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[1]) + ' '
@@ -76,7 +77,6 @@ struct MyTracker: public WebcamListener {
 
 		// Show on screen
 		imshow(window, img);
-		counter(); // Update FPS counter
 	}
 };
 
