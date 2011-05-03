@@ -49,7 +49,7 @@ struct Timer {
 			m_start_time = stop_time;
 		#elif _POSIX_TIMERS > 0
 			timetype t;
-			clock_gettime(CLOCK_REALTIME, &t);
+			clock_gettime(CLOCK_MONOTONIC, &t);
 			m_duration = (t.tv_sec - m_start_time.tv_sec) + (t.tv_nsec - m_start_time.tv_nsec) / 1000000000.0;
 			m_start_time = t;
 		#else
