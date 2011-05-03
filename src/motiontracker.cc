@@ -80,8 +80,8 @@ void ColorTracker::frameEvent(const cv::Mat& frame) {
 	m_counter(); // Update FPS
 }
 
-ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
-	: MotionTracker(webcam), m_solver(solver)
+ColorCrossTracker::ColorCrossTracker(Webcam &webcam, const CalibrationParameters &calibParams, int solver)
+	: MotionTracker(webcam), m_calibParams(calibParams), m_solver(solver)
 {
 	m_objectPoints.push_back(cv::Point3f(0,0,0));	// Green ("Origin")
 	m_objectPoints.push_back(cv::Point3f(0,100,0)); // Red
@@ -94,9 +94,6 @@ ColorCrossTracker::ColorCrossTracker(Webcam &webcam, int solver)
 	m_modelPoints.push_back(cvPoint3D32f(0.0f, 0.0f, 100.0f));
 
 	m_positObject = cvCreatePOSITObject(&m_modelPoints[0], (int)m_modelPoints.size() );
-
-	// Errors reading calibration are fatal
-	m_calibParams = m_calibParams.fromFile("calibration.xml");
 }
 
 std::vector<cv::Point2f> ColorCrossTracker::getImagePoints() const {

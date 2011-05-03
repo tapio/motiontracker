@@ -84,8 +84,9 @@ int main(int argc, char** argv)
 	boost::scoped_ptr<ColorCrossTracker> tracker;
 
 	try {
+		CalibrationParameters calibParams = CalibrationParameters::fromFile("calibration.xml");
 		webcam.reset(new Webcam);
-		tracker.reset(new ColorCrossTracker(*webcam,2));
+		tracker.reset(new ColorCrossTracker(*webcam, calibParams, 2));
 	} catch (std::exception const &e) {
 		std::cout << "Error: " << e.what() << std::endl;
 		return 1;

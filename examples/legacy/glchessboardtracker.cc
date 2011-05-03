@@ -12,7 +12,7 @@ namespace {
 	const char* window = "webcam"; ///< OpenCV window id/title
 	boost::shared_ptr<Webcam> webcam; ///< Webcam
 	boost::shared_ptr<MyWebcamListener> camlistener; ///< OpenCV webcam visualizer
-	boost::shared_ptr<ColorCrossTracker> tracker; ///< The tracker
+	boost::shared_ptr<ChessboardTracker> tracker; ///< The tracker
 
 	/// Minimal class for displaying webcam video.
 	struct MyWebcamListener: public WebcamListener {
@@ -99,8 +99,9 @@ int main(int argc, char **argv)
 {
 	(void)argc; (void)argv; // Suppress warnings
 	try {
+		CalibrationParameters calibParams = CalibrationParameters::fromFile("calibration.xml");
 		webcam.reset(new Webcam);
-		tracker.reset(new ColorCrossTracker(*webcam, 2));
+		tracker.reset(new ChessboardTracker(*webcam, calibParams));
 		camlistener.reset(new MyWebcamListener(*webcam));
 	} catch (std::exception& e) {
 		std::cout << "ERROR: " << e.what() << std::endl;

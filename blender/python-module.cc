@@ -8,8 +8,9 @@ namespace bpy = boost::python;
 
 PyMotionTracker::PyMotionTracker(/*TODO: params*/)
 {
+	CalibrationParameters calibParams = CalibrationParameters::fromFile("calibration.xml");
 	webcam = new Webcam;
-	tracker = new ColorCrossTracker(*webcam, 2);
+	tracker = new ColorCrossTracker(*webcam, calibParams, 2);
 	std::cout << "PyMotionTracker initialized." << std::endl;
 }
 

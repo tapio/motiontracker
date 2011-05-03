@@ -263,9 +263,10 @@ public:
 	/**
 	 * Constructor.
 	 * @param webcam reference to a valid webcam for getting video
+	 * @param calibParams the calibration parameters
 	 * @param solver the method used: 1 = solvePnP, 2 = POSIT
 	 */
-	ColorCrossTracker(Webcam &webcam, int solver = 1);
+	ColorCrossTracker(Webcam &webcam, const CalibrationParameters &calibParams, int solver = 1);
 
 	/** Thread calls this, don't call directly. */
 	void frameEvent(const cv::Mat& frame);
@@ -285,13 +286,11 @@ private:
 	/// Solve pose using POSIT algorithm.
 	void solvePOSIT();
 
+	CalibrationParameters m_calibParams;
 	int m_solver;
 	std::vector<cv::Point3f> m_objectPoints;
 	std::vector<cv::Point2f> m_imagePoints;
 	std::vector<cv::Point2f> m_savedImagePoints;
-
-	// PnP stuff
-	CalibrationParameters m_calibParams;
 
 	// Posit stuff
 	CvPOSITObject* m_positObject;
