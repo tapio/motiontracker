@@ -28,8 +28,10 @@ void mouseHandler(int event, int x, int y, int flags, void *param)
 	switch(event) {
 		// Left button down
 		case CV_EVENT_LBUTTONDOWN:
-			if (hues.size() < 4)
+			if (hues.size() < 4) {
 				hues.push_back((int)HSV->at<Vec3b>(y,x)[0]);
+				std::cout << "Hue: " << hues.back() << std::endl;
+			}
 			break;
 	}
 }
