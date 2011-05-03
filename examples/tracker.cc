@@ -4,6 +4,8 @@
  *
  * Detects the reference object from the webcam video and calculates its pose.
  * Validation of the calculation is done by overlay.
+ *
+ * Define PRINT_LOCROT at compile time to get some numbers on the screen.
  */
 
 #include <iostream>
@@ -56,7 +58,7 @@ struct MyTracker: public WebcamListener {
 		putText(img, boost::lexical_cast<std::string>(counter.getFPS()),
 			Point(0, 475), FONT_HERSHEY_PLAIN, 1, CV_RGB(255,0,255));
 
-		#ifdef PRINT_ROTLOC
+		#ifdef PRINT_LOCROT
 		std::string loc, rotv;
 		loc = "Position vector: x: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[0]) + ' '
 			  + "y: " + boost::lexical_cast<std::string>((int)ctr->getPosition()[1]) + ' '
