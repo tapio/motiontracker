@@ -1,7 +1,7 @@
 project(MotionTracker CXX C)
 cmake_minimum_required(VERSION 2.6)
 cmake_policy(VERSION 2.6)
-set(PROJECT_VERSION "alpha")
+set(PROJECT_VERSION "1.0")
 
 option(BUILD_EXAMPLES "Build the example programs." ON)
 option(BUILD_DEPRECATED "Build deprecated example programs." OFF)
